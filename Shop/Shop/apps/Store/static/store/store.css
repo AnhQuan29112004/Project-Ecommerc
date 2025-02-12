@@ -1,0 +1,9 @@
+.store-content .container{
+    display: flex;
+}
+
+.store-filter-button{
+    text-decoration: none;
+    font-size: large;
+    color: black;
+}
