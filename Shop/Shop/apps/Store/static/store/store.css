@@ -7,3 +7,12 @@
     font-size: large;
     color: black;
 }
+
+
+.img-container {
+    overflow: hidden;
+}
+
+.img-container img{
+    object-fit: fill;
+}

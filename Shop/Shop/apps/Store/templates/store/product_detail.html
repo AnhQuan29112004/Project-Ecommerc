@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container border border-black d-flex">
+    <div class="col-lg-6 img-container">
+        <img class="" src="{{detail_product.image.url}}">
+    </div>
+    <div class="col-lg-6">
+        {{detail_product.product_name}}
+        {{detail_product.price}}
+        {{detail_product.description}}
+        {% if detail_product.stock > 0 %}
+        <button type="button">add to cart </button>
+        {% else %}
+        <button type="button" disabled>add to cart </button>
+        <p>Out of stock!</p>
+        {% endif %}
+    </div>
+    
+</div>
+{% endblock content %}

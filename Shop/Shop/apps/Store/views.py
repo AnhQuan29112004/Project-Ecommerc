@@ -14,3 +14,8 @@ def store(request, slug_category=None):
         "categories": categories,
         "products":products
     })
+def product(request,slug_category, slug):
+    detail_product = Product.objects.get(category__slug_category = slug_category,slug = slug)
+    return render(request, "store/product_detail.html",{
+        "detail_product": detail_product
+    })

@@ -41,14 +41,14 @@
                                 <i class="fa fa-bars"></i> All category
                             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">All Product</a>
+                                <a class="dropdown-item" href={% url "store" %}>All Product</a>
                                 {% for i in links %}
-                                <a class="dropdown-item" href="#">{{i.category_name}}</a>
+                                <a class="dropdown-item" href={% url "get_category" i.slug_category%}>{{i.category_name}}</a>
                                 {% endfor %}
                             </div>
                         </div>
                         <div class="btn btn-info ms-2">
-                            <a class="text-decoration-none text-white" href="store">
+                            <a class="text-decoration-none text-white" href={% url "store" %}>
                             Store
                             </a>
                         </div>

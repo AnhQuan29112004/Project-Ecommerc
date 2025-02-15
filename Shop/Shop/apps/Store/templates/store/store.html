@@ -20,7 +20,7 @@
                     <div class="collapse container pb-3" id="collapseFilter">
                         <hr>
                         {% for i in categories %}
-                        <a href="{% url "get_category" i.slug_category %}">
+                        <a class="d-block" href="{% url "get_category" i.slug_category %}">
                             {{i.category_name}}
                         </a>
                         {% endfor %}
@@ -33,10 +33,10 @@
                         {% for i in products %}
                         <div class="col-lg-4">
                             <div class="card ps-2 pe-2">
-                                <a href="./product-detail.html" class="d-flex justify-content-center"> 
-                                    <img class="img-fluid product-img" src="{{i.image.url}}"> </a>
+                                <a href={% url "get_product" i.category.slug_category i.slug%} class="d-flex justify-content-center"> 
+                                    <img class="img-fluid object-fit-cover" src="{{i.image.url}}"> </a>
                                 <div class="p-md-3 p-sm-0" >
-                                    <a href="./product-detail.html" class="text-black text-decoration-none ">{{i.product_name}}</a>
+                                    <a href={% url "get_product" i.category.slug_category i.slug%} class="text-black text-decoration-none ">{{i.product_name}}</a>
                                     <div class=""><p class="fw-bold">${{i.price}}</p></div> <!-- price-wrap.// -->
                                 </div>
                             </div>

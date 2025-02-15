@@ -20,11 +20,6 @@ class Product(models.Model):
     
     def get_url(self):
         pass
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs) 
-        img = Image.open(self.image.path)
-        img = img.resize((218, 220))
-        img.save(self.image.path)
     
 
 class ReviewRating(models.Model):
