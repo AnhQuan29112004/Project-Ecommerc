@@ -66,10 +66,18 @@
         
             <!-- Div 3: Welcome & Sign-in -->
             <div class="col-lg-4 col-md-12 text-lg-end text-center">
-                <p class="title text-muted small mb-1">Welcome guest</p>
-                <div>
-                    <a style="color: black" href="#">Sign in</a> <span> | </span>
-                    <a style="color: black" href="#">Register</a>
+                <div class="d-flex align-items-center ">
+                    <div>
+                        <p class="title text-muted small mb-1">Welcome guest</p>
+                        <div>
+                            <a style="color: black" href="#">Sign in</a> <span> | </span>
+                            <a style="color: black" href="#">Register</a>
+                        </div>
+                    </div>
+                    <div>
+                        <a href={% url "cart" %}><i class="bi bi-cart"></i></a>
+                        <p>{{counter_cart}}
+                    </div>
                 </div>
             </div>
         </div>

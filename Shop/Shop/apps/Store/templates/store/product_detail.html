@@ -10,7 +10,7 @@
         {{detail_product.price}}
         {{detail_product.description}}
         {% if detail_product.stock > 0 %}
-        <button type="button">add to cart </button>
+        <a href={% url "add_cart" detail_product.id%}><button type="button">add to cart </button></a>
         {% else %}
         <button type="button" disabled>add to cart </button>
         <p>Out of stock!</p>

@@ -16,3 +16,11 @@
 .img-container img{
     object-fit: fill;
 }
+
+thead th{
+    text-align: center;
+}
+
+tbody th{
+    vertical-align: middle;
+}
