@@ -22,6 +22,6 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include("Shop.apps.HomePage.urls")),
-    path("store", include("Shop.apps.Store.urls")),
-    path("carts",include("Shop.apps.carts.urls"))
+    path("store/", include("Shop.apps.Store.urls")),
+    path("carts/",include("Shop.apps.carts.urls"))
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
