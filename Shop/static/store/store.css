@@ -1,0 +1,26 @@
+.store-content .container{
+    display: flex;
+}
+
+.store-filter-button{
+    text-decoration: none;
+    font-size: large;
+    color: black;
+}
+
+
+.img-container {
+    overflow: hidden;
+}
+
+.img-container img{
+    object-fit: fill;
+}
+
+thead th{
+    text-align: center;
+}
+
+tbody th{
+    vertical-align: middle;
+}

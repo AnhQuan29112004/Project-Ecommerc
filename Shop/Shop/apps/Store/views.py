@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from ..Category.models import Category
-from utils.app_store import paginate
+from utils.python.app_store import paginate
 from .models import Product
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # Create your views here.
@@ -8,9 +8,9 @@ def store(request, slug_category=None):
     categories = Category.objects.all()
     if slug_category!=None:
         category_product = get_object_or_404(Category, slug_category = slug_category)
-        products = Product.objects.all().filter(category = category_product, is_available=True)
+        products = Product.objects.all().filter(category = category_product, is_available=True).order_by("id")
     else:
-        products = Product.objects.all().filter(is_available=True)
+        products = Product.objects.all().filter(is_available=True).order_by("id")
         # paginate = Paginator(products, 4)
         # crrPage = request.GET.get('page')
         # paginateStore = paginate.get_page(crrPage)

@@ -84,7 +84,6 @@
         .then(data => {
             console.log('Success response:', data);
             if (data.message === "Add success") {
-                // Update quantity
                 const updateQuantity = parentProduct.querySelector(".quantity");
                 if (updateQuantity) {
                     updateQuantity.innerText = data.item.quantity;
@@ -92,7 +91,6 @@
                     console.error('Could not find quantity element');
                 }
                 
-                // Update total price for this item
                 const priceCell = parentProduct.closest('tr').querySelector('th:nth-child(3)');
                 if (priceCell) {
                     priceCell.innerText = data.item.total_item;
@@ -100,7 +98,6 @@
                     console.error('Could not find price cell');
                 }
                 
-                // Update cart totals
                 const totalElement = document.getElementById('total');
                 const taxElement = document.getElementById('tax');
                 const grandTotalElement = document.getElementById('grand_total');
@@ -118,13 +115,6 @@
         });
     }
     
-    function getCSRFToken() {
-        const token = document.querySelector('[name=csrfmiddlewaretoken]');
-        if (!token) {
-            console.error('CSRF token not found');
-            return '';
-        }
-        return token.value;
-    }
+    
 </script>
 {% endblock script %}

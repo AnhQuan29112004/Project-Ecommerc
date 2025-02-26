@@ -2,6 +2,7 @@
 
 {% block content %}
 <div class="container border border-black d-flex">
+    {% csrf_token %}
     <div class="col-lg-6 img-container">
         <img class="" src="{{detail_product.image.url}}">
     </div>
@@ -10,7 +11,7 @@
         {{detail_product.price}}
         {{detail_product.description}}
         {% if detail_product.stock > 0 %}
-        <a href={% url "add_cart" detail_product.id%}><button type="button">add to cart </button></a>
+        <button class="btnAddInDetail" onclick="btnAddInDetail(this)" type="button" data-url="{% url "add_cart" detail_product.id %}" data-tran="{% url "cart" %}">add to cart </button>
         {% else %}
         <button type="button" disabled>add to cart </button>
         <p>Out of stock!</p>
@@ -19,3 +20,24 @@
     
 </div>
 {% endblock content %}
+
+{% block script %}
+<script>
+    function btnAddInDetail(product){
+        const urlAdd = product.getAttribute("data-url")
+        const urlTran = product.getAttribute("data-tran")
+        fetch(urlAdd,{
+            method: "POST",
+            headers: {
+                'X-CSRFToken': getCSRFToken(),
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+        })
+        .then(response=>response.json())
+        .then(data=>{
+            window.location.assign(`${urlTran}`);
+        })
+    }
+</script>
+{% endblock script %}
