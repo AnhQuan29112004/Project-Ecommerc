@@ -5,8 +5,11 @@
     <section class="section-intro padding-y-sm">
         <div class="container">
         
-        <div class="intro-banner-wrap">
-            <img style="" src= {%static "images/WIN_20231130_23_09_14_Pro.jpg" %} class="img-fluid">
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <img class="swiper-slide" style="" src= {%static "images/banner/Đen và Màu kem Tối giản Bán lẻ Thanh lịch Đồ điện tử và Thiết bị Banner.png" %}>
+                <img class="swiper-slide" style="" src= {%static "images/banner/WIN_20231130_23_09_14_Pro.jpg" %}>
+            </div>
         </div>
         
         </div> <!-- container //  -->
@@ -52,3 +55,15 @@
     
     
 {% endblock content %}
+
+{% block script %}
+<script>
+    const swiper = new Swiper(".swiper-container", {
+        direction: "horizontal",
+        autoplay: {
+          delay: 3000,
+        },
+      });
+</script>
+{% endblock script %}
+    

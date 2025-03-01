@@ -10,6 +10,14 @@
         {{detail_product.product_name}}
         {{detail_product.price}}
         {{detail_product.description}}
+        <div class="d-block">
+            <div class="d-grid">
+                <p>color: </p>
+                {% for i in detail_product.variation_set.color %}
+                <button type="button">{{i.variation_value}}</button>
+                {% endfor %}
+            </div>
+        </div>
         {% if detail_product.stock > 0 %}
         <button class="btnAddInDetail" onclick="btnAddInDetail(this)" type="button" data-url="{% url "add_cart" detail_product.id %}" data-tran="{% url "cart" %}">add to cart </button>
         {% else %}
