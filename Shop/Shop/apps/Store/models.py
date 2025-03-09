@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Sum
 from Shop.apps.Account.models import Account
 from Shop.apps.Category.models import Category
 from PIL import Image
@@ -51,9 +52,11 @@ class Variation(models.Model):
     variation_value = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
     create_at = models.DateTimeField(auto_now=True)
-    
     objects = VariationManager()
     
     def __unicode__(self):
         return self.product
+    
+            
+         
     

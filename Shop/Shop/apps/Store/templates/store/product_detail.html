@@ -7,20 +7,20 @@
         <img class="" src="{{detail_product.image.url}}">
     </div>
     <div class="col-lg-6">
-        {{detail_product.product_name}}
-        {{detail_product.price}}
-        {{detail_product.description}}
-        <div class="d-block">
-            <div class="d-grid">
+        <div class="detail_pd_name">{{detail_product.product_name}}</div>
+        <div class="detail_pd_price">{{detail_product.price}}</div>
+        <div class="detail_pd_description">{{detail_product.description}}</div>
+        <div class="variations d-block">
+            <div class="variation-color d-grid">
                 <p>color: </p>
                 {% for i in detail_product.variation_set.color %}
-                <button type="button">{{i.variation_value}}</button>
+                <button class="btnColor" type="button">{{i.variation_value}}</button>
                 {% endfor %}
             </div>
-            <div class="d-grid">
+            <div class="variation-size d-grid">
                 <p>size: </p>
                 {% for i in detail_product.variation_set.size %}
-                <button type="button">{{i.variation_value}}</button>
+                <button class="btnSize" type="button">{{i.variation_value}}</button>
                 {% endfor %}
             </div>
         </div>
@@ -37,6 +37,9 @@
 
 {% block script %}
 <script>
+
+
+
     function btnAddInDetail(product){
         const urlAdd = product.getAttribute("data-url")
         const urlTran = product.getAttribute("data-tran")
