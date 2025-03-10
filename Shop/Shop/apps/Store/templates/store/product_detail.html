@@ -7,21 +7,27 @@
         <img class="" src="{{detail_product.image.url}}">
     </div>
     <div class="col-lg-6">
-        <div class="detail_pd_name">{{detail_product.product_name}}</div>
-        <div class="detail_pd_price">{{detail_product.price}}</div>
-        <div class="detail_pd_description">{{detail_product.description}}</div>
+        <div class="detail_pd_name" data-value="{{detail_product.product_name}}">{{detail_product.product_name}}</div>
+        <div class="detail_pd_price" data-value="{{detail_product.price}}">{{detail_product.price}}</div>
+        <div class="detail_pd_description" data-value="{{detail_product.description}}">{{detail_product.description}}</div>
         <div class="variations d-block">
+            <p>color: </p>
             <div class="variation-color d-grid">
-                <p>color: </p>
+                
                 {% for i in detail_product.variation_set.color %}
-                <button class="btnColor" type="button">{{i.variation_value}}</button>
+                <button class="btnColor" type="button" data-variation="{{i.variation_category}}" data-value="{{i.variation_value}}">{{i.variation_value}}</button>
                 {% endfor %}
             </div>
+            <p>size: </p>
             <div class="variation-size d-grid">
-                <p>size: </p>
+
                 {% for i in detail_product.variation_set.size %}
-                <button class="btnSize" type="button">{{i.variation_value}}</button>
+                <button class="btnSize" type="button" data-variation="{{i.variation_category}}" data-value="{{i.variation_value}}">{{i.variation_value}}</button>
                 {% endfor %}
+            </div>
+            <div class="Product-cart-quantity">
+                <label>So luong: </label>
+                <input class="quantityToCart" type="text" id="quantityToCart">
             </div>
         </div>
         {% if detail_product.stock > 0 %}
@@ -37,24 +43,51 @@
 
 {% block script %}
 <script>
+    const addProductToCart = {
+        color:null,
+        size: null,
+        quantity:0
+    }
 
+    document.querySelectorAll(".btnColor").forEach(button=>{
+        button.addEventListener('click', function(){
+            addProductToCart.color = this.dataset.value;
+            document.querySelectorAll(".btnColor").forEach(btn => btn.classList.remove('selected'));
+            this.classList.add('selected');
 
+        })
+    });
+    document.querySelectorAll(".btnSize").forEach(button=>{
+        button.addEventListener('click', function(){
+            addProductToCart.size = this.dataset.value;
+            document.querySelectorAll(".btnSize").forEach(btn => btn.classList.remove('selected'));
+            this.classList.add('selected');
 
-    function btnAddInDetail(product){
+        })
+    });
+    
+    document.querySelector(".Product-cart-quantity .quantityToCart").addEventListener("input", function(){
+        addProductToCart.quantity = this.value;
+    });
+
+    
+
+    async function btnAddInDetail(product){
         const urlAdd = product.getAttribute("data-url")
         const urlTran = product.getAttribute("data-tran")
-        fetch(urlAdd,{
+        const response = await fetch(urlAdd,{
             method: "POST",
             headers: {
                 'X-CSRFToken': getCSRFToken(),
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
+            body: JSON.stringify(addProductToCart),
             credentials: 'same-origin'
-        })
-        .then(response=>response.json())
-        .then(data=>{
-            window.location.assign(`${urlTran}`);
-        })
+        });
+
+        if(response.ok){
+            window.location.href = urlTran;      
+        }
     }
 
     

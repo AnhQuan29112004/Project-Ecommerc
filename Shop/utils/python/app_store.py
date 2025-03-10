@@ -8,3 +8,6 @@ def paginate(request,product, per_page):
     numberPage = paginateStore.number
     
     return [paginateStore,numberPerPage,numberPage]
+
+
+    
