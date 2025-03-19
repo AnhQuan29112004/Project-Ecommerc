@@ -1,3 +1,4 @@
+from utils.python.app_cart import bill
 from django.shortcuts import render, redirect,get_object_or_404
 from .models import Cart, CartItem
 from ..Store.models import Product, Variation
@@ -5,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
 from decimal import Decimal
 import json
-from utils.python.app_cart import bill
+
 
 # Create your views here.
 def _card_id(request):
