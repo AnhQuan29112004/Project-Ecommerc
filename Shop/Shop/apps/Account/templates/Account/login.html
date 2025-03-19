@@ -2,16 +2,19 @@
 {% block content %}
 <div>
     {% if form %}
-    <form method="POST">
+    <form class="formLogin" method="POST">
         {% include "Account/messages.html" %}
         {% csrf_token %}
-        {% for i in form %}
-        {{i.label_tag}}
-        {{i}}
-        {{i.errors}}
-        {% endfor %}
+        <div>
+            {{ form.username.label_tag }} 
+            {{ form.username }}
+        </div>
+        <div>
+            {{ form.password.label_tag }}
+            {{ form.password }}
+        </div>
         {{form.non_field_errors}}
-        <button type="submit">Register</button>
+        <button class="btnLogin" type="submit" data-url={% url "login" %} data-urlTran= {% url "homepage" %}>Login</button>
     </form>
     {% endif %}
 </div>
@@ -19,5 +22,40 @@
 
 {% block script %}
 <script>
+    document.querySelector('.btnLogin').addEventListener('click', function(event){
+        event.preventDefault();
+        let form = document.querySelector('.formLogin');
+        let formData = {
+            username: form.username.value,
+            password: form.password.value
+        };
+        console.log(formData);
+        let url = document.querySelector('.btnLogin').getAttribute('data-url');
+        let urlTran = document.querySelector('.btnLogin').getAttribute('data-urlTran');
+        fetch(url,{
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCSRFToken(),
+            },
+            credentials: 'same-origin',
+            body : JSON.stringify(formData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success === 'Login Successful!!'){
+                setTimeout(function(){
+                    window.location.href = urlTran;
+                }, 2000);
+            }else {
+                console.error("Login failed:", data.error);
+            }
+        })
+    });
+
 </script>
 {% endblock script %}

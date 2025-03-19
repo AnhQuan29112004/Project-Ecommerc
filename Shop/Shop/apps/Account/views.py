@@ -1,8 +1,12 @@
-from django.shortcuts import render
-from .forms import RegisterForm
+from django.shortcuts import render, redirect
+from .forms import RegisterForm, CustormAuthenticationForm
 from .models import Account
 from django.contrib import messages,auth
 from django.contrib.auth.forms import AuthenticationForm
+from django.http import JsonResponse
+import pdb
+import json
+
 
 # Create your views here.
 def Register(request):
@@ -31,16 +35,20 @@ def Register(request):
        
 def login(request):
     if request.method == "POST":
-        form = AuthenticationForm(request, request.POST)
+        data = json.loads(request.body)
+        form = CustormAuthenticationForm(request, data)
         if form.is_valid():
             user = form.get_user()
             if user is not None:
                 auth.login(request, user)
                 messages.success(request, "Login Successful!!")
-            else:
-                messages.error(request, "Login Fail!!")
+                return JsonResponse({'success': 'Login Successful!!'}, status=200)
         else:
-            messages.error(request, "Login Fail!!")
-    else:
-        form = AuthenticationForm()
-    return render(request, 'Account/login.html')
+            print(form.errors)  # In lỗi ra terminal
+            return JsonResponse({"error": "Login Failed", "details": form.errors}, status=400)
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({"error": "Invalid request"}, status=400)
+
+    form = CustormAuthenticationForm()
+    return render(request, 'Account/login.html', {'form': form})

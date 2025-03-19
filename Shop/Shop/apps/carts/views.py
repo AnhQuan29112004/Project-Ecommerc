@@ -131,7 +131,7 @@ def cart(request, cartItem = None):
         cartItem = CartItem.objects.filter(cart = cart, is_active=True)
         Bill = bill(cartItem)
     except ObjectDoesNotExist:
-        pass
+        Bill = bill()
     return render(request, "store/cart.html",{
         "cart_item": cartItem,
         "tax": Bill["tax"],
