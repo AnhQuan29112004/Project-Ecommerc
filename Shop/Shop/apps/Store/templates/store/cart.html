@@ -20,16 +20,35 @@
                         <tbody>
                             {% for i in cart_item %}
                             <tr>
-                                <th><img style="width: 100px; heigth:100px" src='{{i.product.image.url}}'>{{i.product.product_name}}</th>
+                                <th>
+                                    <img style="width: 100px; heigth:100px" src='{{i.product.image.url}}'>{{i.product.product_name}}
+                                    {% for j in i.variation.all %}
+                                    <div>{{j.variation_value}}</div>
+                                    {% endfor %}
+                                </th>
                                 <th>
                                     <div class="item_quantity d-flex">
-                                        <div class="card"><a href={% url "remove_cart" i.product.id%}><i class="bi bi-dash"></i></a></div>
+                                        <div class="card"><button class="btnRemoveItem" onclick="removeOne(this)" 
+                                            data-id={{i.product.id}} data-url="{% url 'remove_cart' i.product.id %}" 
+                                            data-color="{% for j in i.variation.all %}{% if j.variation_category == 'color' %}{{ j.variation_value }}{% endif %}{% endfor %}" 
+                                            data-size="{% for j in i.variation.all %}{% if j.variation_category == 'size' %}{{ j.variation_value }}{% endif %}{% endfor %}" 
+                                            data-quantity="{{i.quantity}}">
+                                            <i class="bi bi-dash"></i>
+                                            </button></div>
                                         <div class="quantity">{{i.quantity}}</div>
-                                        <div class="card"><button class="btnAddItem" onclick="addToCart(this)" data-id={{i.product.id}} data-url="{% url 'add_cart' i.product.id %}"><i class="bi bi-plus-lg"></i></button></div>
+                                        <div class="card">
+                                            <button class="btnAddItem" onclick="addToCart(this)" 
+                                            data-id={{i.product.id}} data-url="{% url 'add_cart' i.product.id %}" 
+                                            data-color="{% for j in i.variation.all %}{% if j.variation_category == 'color' %}{{ j.variation_value }}{% endif %}{% endfor %}" 
+                                            data-size="{% for j in i.variation.all %}{% if j.variation_category == 'size' %}{{ j.variation_value }}{% endif %}{% endfor %}" 
+                                            data-quantity="{{i.quantity}}">
+                                            <i class="bi bi-plus-lg"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </th>
-                                <th>{{i.total_item}}</th>
-                                <th><a href={% url "remove_cart_item" i.product.id%}><button typy="button" class="btn btn-danger">Remove</button></a></th>
+                                <th><div class="totalItemCart">{{i.total_item}}</div></th>
+                                <th><a href={% url "remove_cart_item" i.id%}><button typy="button" class="btn btn-danger">Remove</button></a></th>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -61,6 +80,64 @@
 
 {% block script %}
 <script>
+
+    async function removeOne(product){
+        const parentProduct = product.closest(".item_quantity");
+        const url = product.getAttribute("data-url");
+        let response = await fetch(url, {
+            method: "DELETE",
+            headers: {
+                'X-CSRFToken': getCSRFToken(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                color:product.dataset.color,
+                size: product.dataset.size,
+                quantity:1
+            }),
+            credentials: 'same-origin'
+        })
+
+        if (response.ok){
+            let data = await response.json()
+            if (data.message === "Delete one success") {
+                const updateQuantity = parentProduct.querySelector(".quantity");
+                if (updateQuantity) {
+                    updateQuantity.innerText = data.item.quantity;
+                } else {
+                    console.error('Could not find quantity element');
+                }
+                
+                const priceCell = parentProduct.closest('tr').querySelector('.totalItemCart');
+                if (priceCell) {
+                    priceCell.innerText = data.item.total_item;
+                } else {
+                    console.error('Could not find price cell');
+                }
+
+                
+                const totalElement = document.getElementById('total');
+                const taxElement = document.getElementById('tax');
+                const grandTotalElement = document.getElementById('grand_total');
+                
+                if (totalElement) totalElement.innerText = data.total;
+                if (taxElement) taxElement.innerText = data.tax;
+                if (grandTotalElement) grandTotalElement.innerText = data.grand_total;
+            } 
+            else if(data.message === "Delete item success") {
+                parentProduct.closest('tr').remove();
+                const totalElement = document.getElementById('total');
+                const taxElement = document.getElementById('tax');
+                const grandTotalElement = document.getElementById('grand_total');
+                
+                if (totalElement) totalElement.innerText = data.total;
+                if (taxElement) taxElement.innerText = data.tax;
+                if (grandTotalElement) grandTotalElement.innerText = data.grand_total;
+            }
+        }
+    }
+
+
     function addToCart(product) {
         const parentProduct = product.closest(".item_quantity");
         const url = product.getAttribute("data-url");
@@ -71,6 +148,11 @@
                 'X-CSRFToken': getCSRFToken(),
                 'Content-Type': 'application/json'
             },
+            body: JSON.stringify({
+                color:product.dataset.color,
+                size: product.dataset.size,
+                quantity:1
+            }),
             credentials: 'same-origin'
         })
         .then(async response => {
@@ -91,7 +173,7 @@
                     console.error('Could not find quantity element');
                 }
                 
-                const priceCell = parentProduct.closest('tr').querySelector('th:nth-child(3)');
+                const priceCell = parentProduct.closest('tr').querySelector('.totalItemCart');
                 if (priceCell) {
                     priceCell.innerText = data.item.total_item;
                 } else {

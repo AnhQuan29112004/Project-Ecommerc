@@ -1,5 +1,5 @@
 from django.db import models
-from ..Store.models import Product
+from ..Store.models import Product, Variation
 # Create your models here.
 class Cart(models.Model):
     cart_id = models.CharField(max_length=250, blank=True)
@@ -13,7 +13,7 @@ class CartItem(models.Model):
     cart = models.ForeignKey("Cart",on_delete=models.CASCADE)
     quantity = models.IntegerField()
     is_active = models.BooleanField(default=True)
-    
+    variation = models.ManyToManyField(Variation,blank=True)
     def total_item(self):
         return float(self.product.price * self.quantity)
     def __str__(self):
