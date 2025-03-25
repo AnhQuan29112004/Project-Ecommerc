@@ -1,5 +1,6 @@
 from django.db import models
 from ..Store.models import Product, Variation
+from Shop.apps.Account.models import Account
 # Create your models here.
 class Cart(models.Model):
     cart_id = models.CharField(max_length=250, blank=True)
@@ -18,3 +19,9 @@ class CartItem(models.Model):
         return float(self.product.price * self.quantity)
     def __str__(self):
         return self.product.product_name
+    
+    
+class WishList(models.Model):
+    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    date_add = models.DateTimeField(auto_now_add=True)

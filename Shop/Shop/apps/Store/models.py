@@ -3,6 +3,7 @@ from django.db.models import Sum
 from Shop.apps.Account.models import Account
 from Shop.apps.Category.models import Category
 from PIL import Image
+from shortuuidfield import ShortUUIDField
 # Create your models here.
 
 class Tag(models.Model):
@@ -26,6 +27,9 @@ class Product(models.Model):
         ('Còn hàng', 'Còn hàng'),
         ('Hết hàng', 'Hết hàng')
     ))
+    
+    status = models.BooleanField(default=True) #hiện hoặc ẩn sản phẩm khi còn hay hêt hàng
+    sku = ShortUUIDField(unique=True, max_length=6, prefix='product', alphabet='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ') # Mã sku của sản phẩm
     def __str__(self):
         return self.product_name
     

@@ -67,15 +67,19 @@ class Account(AbstractBaseUser):
         return True
     def get_username(self):
         return super().get_username()
-    
-    
+
+class Address(models.Model):
+    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    address = models.CharField(max_length=200)
+    status = models.BooleanField(default=False)    
+
 class UserProfile(models.Model):
     uid = ShortUUIDField(unique=True, max_length=10, prefix='user', alphabet='0123456789')
     user = models.OneToOneField("Account", on_delete=models.CASCADE)
     picture_profile = models.ImageField(upload_to='user/avt')
     city = models.CharField(max_length=60)
     country = models.CharField(max_length=50)
-    address = models.CharField(max_length=100)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE)
     
     def __str__(self):
         return self.user.first_name
