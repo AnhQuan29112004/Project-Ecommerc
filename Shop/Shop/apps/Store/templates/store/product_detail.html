@@ -31,7 +31,7 @@
             </div>
         </div>
         {% if detail_product.stock > 0 %}
-        <button class="btnAddInDetail" onclick="btnAddInDetail(this)" type="button" data-url="{% url "add_cart" detail_product.id %}" data-tran="{% url "cart" %}">add to cart </button>
+        <button class="btnAddInDetail" onclick="btnAddInDetail(this)" type="button" data-url="{% url "add_cart" detail_product.id %}?next={{request.path}}" data-tran="{% url "cart" %}">add to cart </button>
         {% else %}
         <button type="button" disabled>add to cart </button>
         <p>Out of stock!</p>

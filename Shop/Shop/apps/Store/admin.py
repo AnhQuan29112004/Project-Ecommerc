@@ -1,9 +1,15 @@
 from django.contrib import admin
 from .models import Product, Variation
+from django.utils.safestring import mark_safe
 # Register your models here.
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['product_name','price','stock','create_at','modified_by']
+    def view_image(self, obj):
+        if obj.image: 
+            return mark_safe(f'<img src="{obj.image.url}" width="50px" />')
+        return "No Image" 
+
+    list_display = ['product_name','price','stock','create_at','modified_by', 'view_image']
     prepopulated_fields = {'slug':['product_name']}
     
 class VariationAdmin(admin.ModelAdmin):

@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",  # Gộp file js
+    "Shop.apps.Account.middleware.CustomSessionMiddleware",  # Middleware tự tạo
 ]
 
 ROOT_URLCONF = 'Shop.urls'
@@ -103,7 +104,8 @@ DATABASES = {
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
 AUTHENTICATION_BACKENDS = [
-    "Shop.apps.Account.forms.CustormAuthenticate",  
+    "Shop.apps.Account.auth_backends.UserBackend", 
+    "Shop.apps.Account.auth_backends.AdminBackend",  
     "django.contrib.auth.backends.ModelBackend",  
 ]
 

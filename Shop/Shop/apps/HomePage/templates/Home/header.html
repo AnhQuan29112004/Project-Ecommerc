@@ -72,8 +72,14 @@
                     <div>
                         <p class="title text-muted small mb-1">Welcome guest</p>
                         <div>
+                            {% if user.is_authenticated and not user.is_superuser %}
+                            <p>Đã đăng nhập: {{ user }}</p>
+                            <a style="color: black" href={% url "logout" %}>Log out</a>
+                            {% else %}
+                            <p>Đã đăng nhập: {{ user }}</p>
                             <a style="color: black" href={% url "login" %}>Sign in</a> <span> | </span>
                             <a style="color: black" href={% url "register" %}>Register</a>
+                            {% endif %}
                         </div>
                     </div>
                     <div>

@@ -14,7 +14,7 @@
             {{ form.password }}
         </div>
         {{form.non_field_errors}}
-        <button class="btnLogin" type="submit" data-url={% url "login" %} data-urlTran= {% url "homepage" %}>Login</button>
+        <button class="btnLogin" type="submit" data-url="{% url "login" %}" data-tran={{next}} >Login</button>
     </form>
     {% endif %}
 </div>
@@ -30,14 +30,17 @@
             password: form.password.value
         };
         console.log(formData);
+        
         let url = document.querySelector('.btnLogin').getAttribute('data-url');
         let urlTran = document.querySelector('.btnLogin').getAttribute('data-urlTran');
         fetch(url,{
             method: 'POST',
             headers: {
                 'X-CSRFToken': getCSRFToken(),
+                'Content-Type': 'application/json',
             },
-            credentials: 'same-origin',
+            cache: "no-cache",
+            credentials: 'include', 
             body : JSON.stringify(formData)
         })
         .then(response => {
@@ -47,12 +50,22 @@
             return response.json();
         })
         .then(data => {
-            if (data.success === 'Login Successful!!'){
-                setTimeout(function(){
+            console.log("Response from server:", data);
+            if (data.success === "Login Successful!!") {
+                let messageBox = document.querySelector('.message .alert .alert-message');
+                messageBox.textContent = data.success;
+                document.querySelector('.message').style.display = 'block';
+                setTimeout(() => {
                     window.location.href = urlTran;
                 }, 2000);
             }else {
                 console.error("Login failed:", data.error);
+                let messageBox = document.querySelector('.message .alert .alert-message');
+                messageBox.textContent = data.error || "Login failed";
+                document.querySelector('.message').style.display = 'block';
+                setTimeout(() => {
+                    document.querySelector('.message').style.display = 'none';
+                }, 2000);
             }
         })
     });

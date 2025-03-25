@@ -20,21 +20,7 @@ class RegisterForm(forms.ModelForm):
             raise forms.ValidationError("Password not matching")
         return data
 
-
-class CustormAuthenticate(ModelBackend): 
-    def authenticate(self, *args,**kwargs):
-        try:
-            user = Account.objects.get(email=kwargs.get('username'))
-            
-        except Account.DoesNotExist:
-            return None
-        if user.check_password(kwargs.get('password')):
-            return user
-        else:
-            return None
         
-       
-
 class CustormAuthenticationForm(AuthenticationForm):
     username = forms.EmailField(widget=forms.EmailInput(attrs={"class": "form-control"}))
 

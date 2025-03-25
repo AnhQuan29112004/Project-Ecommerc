@@ -5,8 +5,10 @@ from utils.python.app_store import paginate
 # Create your views here.
 def home(request):
     list_product = Product.objects.all()
+    print("User",request.user)
     return render(request, "Home/home.html", {
-        "list_product": list_product
+        "list_product": list_product,
+        "user": request.user
     })
     
 def search(request):

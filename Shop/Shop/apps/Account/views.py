@@ -3,6 +3,8 @@ from .forms import RegisterForm, CustormAuthenticationForm
 from .models import Account
 from django.contrib import messages,auth
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.sites.shortcuts import get_current_site
 from django.http import JsonResponse
 import pdb
 import json
@@ -22,7 +24,11 @@ def Register(request):
                 phone_number = data['phone_number'],
                 password=data['password']
             )
+            user.is_active = True
             user.save()
+            
+            
+            current_site = get_current_site(request)
             messages.success(request,"Register Successful!!")
         else:
             messages.error(request,"Register Fail!!")
@@ -35,20 +41,34 @@ def Register(request):
        
 def login(request):
     if request.method == "POST":
+        next = request.GET.get('next','/')
         data = json.loads(request.body)
         form = CustormAuthenticationForm(request, data)
         if form.is_valid():
             user = form.get_user()
-            if user is not None:
+            if user:
                 auth.login(request, user)
+                # if request.user.is_authenticated:
+                #     print("User da authen",request.user)
+                #     print("Session ID:", request.session.session_key)
+                #     print("User trong session:", request.session.get('_auth_user_id'))  
+                #     print("Django auth backend:", request.session.get('_auth_user_backend'))
+                #     print("item", request.session.items())
                 messages.success(request, "Login Successful!!")
-                return JsonResponse({'success': 'Login Successful!!'}, status=200)
+            storage = messages.get_messages(request)
+            message_list = [message.message for message in storage]
+            return JsonResponse({'success': 'Login Successful!!',"messages": message_list, "user":request.user.username, "next": next})
         else:
-            print(form.errors)  # In lỗi ra terminal
-            return JsonResponse({"error": "Login Failed", "details": form.errors}, status=400)
-
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return JsonResponse({"error": "Invalid request"}, status=400)
+            print(form.errors)  
+            messages.error(request, "Login Failed!!")
+            storage = messages.get_messages(request)
+            message_list = [message.message for message in storage]
+            return JsonResponse({"error": "Login Failed", "details": form.errors,"messages": message_list })
 
     form = CustormAuthenticationForm()
     return render(request, 'Account/login.html', {'form': form})
+
+
+def logout(request):
+    auth.logout(request)
+    return redirect("login")
