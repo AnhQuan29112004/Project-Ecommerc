@@ -1,6 +1,8 @@
 from django.db import models
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from shortuuidfield import ShortUUIDField
+
 # Create your models here.
 
 
@@ -68,6 +70,7 @@ class Account(AbstractBaseUser):
     
     
 class UserProfile(models.Model):
+    uid = ShortUUIDField(unique=True, max_length=10, prefix='user', alphabet='0123456789')
     user = models.OneToOneField("Account", on_delete=models.CASCADE)
     picture_profile = models.ImageField(upload_to='user/avt')
     city = models.CharField(max_length=60)
@@ -79,3 +82,23 @@ class UserProfile(models.Model):
     
     def full_address(self):
         return f'{self.address}'
+    
+    
+class VendorProfile(models.Model):
+    vid = ShortUUIDField(unique=True, max_length=10, prefix='ven', alphabet='0123456789')
+    user = models.OneToOneField("Account", on_delete=models.CASCADE)
+    picture_profile = models.ImageField(upload_to='vendor/avt')
+    city = models.CharField(max_length=60)
+    country = models.CharField(max_length=50)
+    address = models.CharField(max_length=100)
+    chat_response_time = models.CharField(max_length=50)
+    shipping_on_time = models.CharField(max_length=50)
+    title_shop = models.CharField(max_length=50)
+    description = models.TextField()
+    days_return = models.CharField(max_length=100, default="100")
+    def __str__(self):
+        return self.user.first_name
+    
+    def full_address(self):
+        return f'{self.address}'
+

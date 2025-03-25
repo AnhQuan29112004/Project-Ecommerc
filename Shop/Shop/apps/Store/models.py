@@ -4,23 +4,43 @@ from Shop.apps.Account.models import Account
 from Shop.apps.Category.models import Category
 from PIL import Image
 # Create your models here.
+
+class Tag(models.Model):
+    pass
+
 class Product(models.Model):
     product_name = models.CharField(max_length=100, unique=True)
     price = models.FloatField()
     stock = models.IntegerField()
     slug = models.SlugField(max_length=200, unique=True)
-    image = models.ImageField(upload_to='photos/products')
+    image = models.ImageField(upload_to=f'photos/products/{slug}/main', null=False, blank=False)
     is_available = models.BooleanField(default=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, default='')
     description = models.TextField(max_length=200)
     create_at = models.DateTimeField(auto_now_add=True)
     modified_by = models.DateTimeField(auto_now=True)
-    
+    user = models.ForeignKey(Account,on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    product_status = models.CharField(max_length=50, choices=(
+        ('Mới', 'Mới'),
+        ('Còn hàng', 'Còn hàng'),
+        ('Hết hàng', 'Hết hàng')
+    ))
     def __str__(self):
         return self.product_name
     
     def get_url(self):
         pass
+    
+class ProductGallery(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to=f'photos/products/{product.slug}/gallery', null=False, blank=False)
+    date_add = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        verbose_name = 'Product Gallery'
+        verbose_name_plural = 'Product Galleries'
+    def __str__(self):
+        return self.product.product_name
     
 
 class ReviewRating(models.Model):
