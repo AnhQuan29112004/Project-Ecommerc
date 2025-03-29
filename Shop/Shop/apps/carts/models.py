@@ -22,6 +22,6 @@ class CartItem(models.Model):
     
     
 class WishList(models.Model):
-    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    user = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     date_add = models.DateTimeField(auto_now_add=True)

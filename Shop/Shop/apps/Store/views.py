@@ -10,7 +10,7 @@ def store(request, slug_category=None):
         products = Product.objects.all().filter(category = category_product, is_available=True).order_by("id")
         paginateStore,numberPerPage,numberPage = paginate(request, products, 4)
     else:
-        products = Product.objects.all().filter(is_available=True).order_by("id")
+        products = Product.objects.all().filter(is_available=True, product_status = 'Ok').order_by("id")
         paginateStore,numberPerPage,numberPage = paginate(request, products, 4)
         
     
@@ -20,7 +20,7 @@ def store(request, slug_category=None):
         "numberPerPage" :numberPerPage,
         "numberPage":numberPage
     })
-def product(request,slug_category, slug):
+def product_detail(request,slug_category, slug):
     detail_product = Product.objects.get(category__slug_category = slug_category,slug = slug)
     return render(request, "store/product_detail.html",{
         "detail_product": detail_product,

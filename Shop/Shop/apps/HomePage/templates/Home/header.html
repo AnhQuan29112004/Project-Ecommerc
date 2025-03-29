@@ -1,94 +1,70 @@
 <header class="section-header">
-    <nav class="navbar navbar-expand-sm navbar-light bg-light p-md-0">
-        <div class="container">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTop4" aria-controls="navbarTop4" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-              </button>
-        
-            <div class="collapse navbar-collapse justify-content-around" id="navbarTop4">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">   English </a>
-                        
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link"> USD </a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav">
-                    <li><a href="#" class="nav-link"> <i class="fa fa-envelope"></i> Email </a></li>
-                    <li><a href="#" class="nav-link"> <i class="fa fa-phone"></i> Call us </a></li>
-                </ul>
-            </div>
-            </div>
-        </div>
-    </nav>
-
-
     <section class="header-main border-bottom">
-        <div class="container d-flex flex-wrap justify-content-between align-items-center">
-            <!-- Div 1: Logo & Categories -->
-            <div class="col-lg-4 col-md-12 d-flex flex-column mb-3 mb-lg-0">
-                <div class="d-flex align-items-center">
-                    <div class="col-6">
-                        <div class="row align-items-center">
-                            GREATKART
+        <div class="container d-flex align-items-center flex-wrap">
+            
+            <nav class="navbar navbar-expand-lg py-3 col-md-8 justify-content-start">
+                <div class="container d-flex">
+                    <a class="navbar-brand fw-bold text-dark me-3" href="#">GREATKART</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav mx-auto">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Categories
+                                </a>
+                                <ul class="dropdown-menu fade" aria-labelledby="shopDropdown">
+                                    <li><a class="dropdown-item" href={% url "store" %}>All Products</a></li>
+                                    {% for i in links %}
+                                    <li><a class="dropdown-item" href={% url "get_category" i.slug_category %}>{{ i.category_name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            <a href={% url "store" %} class="text-decoration-none align-content-center">Store</a>
+                        </ul>
+                        <div class="d-flex align-items-center flex-grow-1 w-100">
+                            <form class="formSearch d-flex flex-grow-1">
+                                <input type="text" name="keyword" class="inputSearch form-control me-2" placeholder="Search">
+                                <button type="submit" class="btnSearch btn btn-primary">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </form>
                         </div>
+                        
                     </div>
-                    <div class="d-flex flex-wrap flex-grow-0">
-                        <div class="category-wrap dropdown">
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
-                                <i class="fa fa-bars"></i> All category
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href={% url "store" %}>All Product</a>
-                                {% for i in links %}
-                                <a class="dropdown-item" href={% url "get_category" i.slug_category%}>{{i.category_name}}</a>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <div class="btn btn-info ms-2">
-                            <a class="text-decoration-none text-white" href={% url "store" %}>
-                            Store
-                            </a>
-                        </div>
+                
+                        <!-- Store Button -->
+                    
+                </div>
+            </nav>
+            <div class="d-flex align-items-center col-md-4 justify-content-end">
+                <div class="me-3">
+                    <p class="title text-muted small mb-1">Welcome guest</p>
+                    <div>
+                        {% if user.is_authenticated and not user.is_superuser %}
+                        {% comment %} <p class="mb-1">Đã đăng nhập: {{ user }}</p> {% endcomment %}
+                        <a class="text-dark" href={% url "logout" %}>Log out</a>
+                        {% else %}
+                        {% comment %} <p class="mb-1">Đã đăng nhập: {{ user }}</p> {% endcomment %}
+                        <a class="text-dark me-2" href={% url "login" %}>Sign in</a> |
+                        <a class="text-dark ms-2" href={% url "register" %}>Register</a>
+                        {% endif %}
                     </div>
                 </div>
-            </div>
         
-            <!-- Div 2: Search Bar -->
-            <div class="col-lg-4 col-md-12 mb-3 mb-lg-0">
-                <form class="formSearch d-flex align-items-center">
-                    <input type="text" name="keyword" class="inputSearch form-control me-2" placeholder="Search">
-                    <button type="submit" class="btnSearch btn btn-primary">
-                        <i class="bi bi-search"></i>
-                    </button>
-                </form>
-            </div>
-        
-            <!-- Div 3: Welcome & Sign-in -->
-            <div class="col-lg-4 col-md-12 text-lg-end text-center">
-                <div class="d-flex align-items-center ">
-                    <div>
-                        <p class="title text-muted small mb-1">Welcome guest</p>
-                        <div>
-                            {% if user.is_authenticated and not user.is_superuser %}
-                            <p>Đã đăng nhập: {{ user }}</p>
-                            <a style="color: black" href={% url "logout" %}>Log out</a>
-                            {% else %}
-                            <p>Đã đăng nhập: {{ user }}</p>
-                            <a style="color: black" href={% url "login" %}>Sign in</a> <span> | </span>
-                            <a style="color: black" href={% url "register" %}>Register</a>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div>
-                        <a href={% url "cart" %}><i class="bi bi-cart"></i></a>
-                        <p>{{counter_cart}}
-                    </div>
+                <!-- Giỏ hàng -->
+                <div class="position-relative">
+                    <a href={% url "cart" %} class="text-dark">
+                        <i class="bi bi-cart fs-4"></i>
+                    </a>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {{ counter_cart }}
+                    </span>
                 </div>
             </div>
         </div>
+        
         
     </section>
 </header>

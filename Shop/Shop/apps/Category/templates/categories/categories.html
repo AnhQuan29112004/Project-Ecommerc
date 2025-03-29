@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class='container rounded mt-4 mb-5' style="background-color: #d4eee3">
+    <p class='fs-1'>Categories</p>
+</div>
+
+<div class="container d-flex flex-wrap">
+    <div class="d-flex justify-content-between w-100">
+        <p class="fs-4">{{categories.count}} Categories</p>
+        <div>search</div>
+    </div>
+    <div class="d-flex g-2">
+        {% for i in categories %}
+        <div class="col-md-3">
+            <div class="card">
+                <a href="./product-detail.html" class="d-flex justify-content-center"> 
+                    <img class="img-fluid product-img" src="{{i.cate_images.url}}"> </a>
+                <div class="p-md-4 p-sm-0" >
+                    <a href="./product-detail.html" class="text-black text-decoration-none ">{{i.category_name}}</a>
+                    <div class=""><p class="fw-bold">${{i.price}}</p></div> <!-- price-wrap.// -->
+                </div>
+            </div>
+        </div> <!-- col.// -->
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}
+
+{% block script %}
+
+{% endblock script %}

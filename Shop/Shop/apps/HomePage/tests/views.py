@@ -23,3 +23,6 @@ def search(request):
         "numberPage":numberPage,
         "keyword":keyword
     })
+    
+def index(request):
+    return render(request, "Home/index.html")

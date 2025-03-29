@@ -2,6 +2,7 @@ from django.db import models
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from shortuuidfield import ShortUUIDField
+from utils.python import uid, vid
 
 # Create your models here.
 
@@ -25,7 +26,7 @@ class MyAccountManager(BaseUserManager):
         return user
     
     def create_superuser(self,first_name, last_name,username,phone_number,  email, password):
-        user = self.create_user(first_name, last_name,username,phone_number,  email, password)
+        user = self.create_user(first_name, last_name,username, email,phone_number, password)
         user.is_admin = True
         user.is_superuser = True
         user.is_staff = True
@@ -50,7 +51,7 @@ class Account(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
     
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'phone_number']
 
     objects = MyAccountManager()
 
@@ -69,13 +70,13 @@ class Account(AbstractBaseUser):
         return super().get_username()
 
 class Address(models.Model):
-    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    user = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)
     address = models.CharField(max_length=200)
     status = models.BooleanField(default=False)    
 
 class UserProfile(models.Model):
-    uid = ShortUUIDField(unique=True, max_length=10, prefix='user', alphabet='0123456789')
-    user = models.OneToOneField("Account", on_delete=models.CASCADE)
+    uid = ShortUUIDField(unique=True, max_length=10, default=uid.generate_uid())
+    user = models.OneToOneField("Account", on_delete=models.CASCADE, null=True, blank=True)
     picture_profile = models.ImageField(upload_to='user/avt')
     city = models.CharField(max_length=60)
     country = models.CharField(max_length=50)
@@ -89,8 +90,8 @@ class UserProfile(models.Model):
     
     
 class VendorProfile(models.Model):
-    vid = ShortUUIDField(unique=True, max_length=10, prefix='ven', alphabet='0123456789')
-    user = models.OneToOneField("Account", on_delete=models.CASCADE)
+    vid = ShortUUIDField(unique=True, max_length=10, default=vid.generate_vid())
+    user = models.OneToOneField("Account", on_delete=models.CASCADE, null=True, blank=True)
     picture_profile = models.ImageField(upload_to='vendor/avt')
     city = models.CharField(max_length=60)
     country = models.CharField(max_length=50)
