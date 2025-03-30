@@ -1,4 +1,4 @@
-<header class="section-header">
+<header class="section-header fixed-header">
     <section class="header-main border-bottom">
         <div class="container d-flex align-items-center flex-wrap">
             
@@ -15,7 +15,7 @@
                                     Categories
                                 </a>
                                 <ul class="dropdown-menu fade" aria-labelledby="shopDropdown">
-                                    <li><a class="dropdown-item" href={% url "store" %}>All Products</a></li>
+                                    <li><a class="dropdown-item" href={% url "categories" %}>All Categories</a></li>
                                     {% for i in links %}
                                     <li><a class="dropdown-item" href={% url "get_category" i.slug_category %}>{{ i.category_name }}</a></li>
                                     {% endfor %}

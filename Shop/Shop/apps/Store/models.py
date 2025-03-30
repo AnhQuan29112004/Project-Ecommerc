@@ -33,7 +33,7 @@ class Product(models.Model):
     ), default='Ok')
     
     status = models.BooleanField(default=True) #hiện hoặc ẩn sản phẩm khi còn hay hêt hàng
-    sku = ShortUUIDField(unique=True, max_length=6, default=sku.generate_sku()) # Mã sku của sản phẩm
+    sku = ShortUUIDField(unique=True, max_length=6, default=sku.generate_sku) # Mã sku của sản phẩm
     def __str__(self):
         return self.product_name
     

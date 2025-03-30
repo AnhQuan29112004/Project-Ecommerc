@@ -75,7 +75,7 @@ class Address(models.Model):
     status = models.BooleanField(default=False)    
 
 class UserProfile(models.Model):
-    uid = ShortUUIDField(unique=True, max_length=10, default=uid.generate_uid())
+    uid = ShortUUIDField(unique=True, max_length=10, default=uid.generate_uid)
     user = models.OneToOneField("Account", on_delete=models.CASCADE, null=True, blank=True)
     picture_profile = models.ImageField(upload_to='user/avt')
     city = models.CharField(max_length=60)
@@ -90,7 +90,7 @@ class UserProfile(models.Model):
     
     
 class VendorProfile(models.Model):
-    vid = ShortUUIDField(unique=True, max_length=10, default=vid.generate_vid())
+    vid = ShortUUIDField(unique=True, max_length=10, default=vid.generate_vid)
     user = models.OneToOneField("Account", on_delete=models.CASCADE, null=True, blank=True)
     picture_profile = models.ImageField(upload_to='vendor/avt')
     city = models.CharField(max_length=60)

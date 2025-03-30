@@ -6,3 +6,5 @@ export function getCSRFToken() {
     }
     return token.value;
 }
+
+window.getCSRFToken = getCSRFToken;

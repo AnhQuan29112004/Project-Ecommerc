@@ -18,7 +18,8 @@ def store(request, slug_category=None):
         "categories": categories,
         "products": paginateStore,
         "numberPerPage" :numberPerPage,
-        "numberPage":numberPage
+        "numberPage":numberPage,
+        "slug_category": slug_category,
     })
 def product_detail(request,slug_category, slug):
     detail_product = Product.objects.get(category__slug_category = slug_category,slug = slug)
