@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from ..Category.models import Category
 from utils.python.app_store import paginate
 from .models import Product
+from Shop.apps.Account.models import VendorProfile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 def store(request, slug_category=None):
     categories = Category.objects.all()
@@ -27,3 +28,10 @@ def product_detail(request,slug_category, slug):
         "detail_product": detail_product,
     })
     
+
+
+def vendor_list(request):
+    vendors = VendorProfile.objects.all()
+    return render(request, 'Vendor/vendor_list.html',{
+        'vendors':vendors
+    })

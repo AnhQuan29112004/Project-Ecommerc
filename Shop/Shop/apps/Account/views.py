@@ -48,12 +48,6 @@ def login(request):
             user = form.get_user()
             if user:
                 auth.login(request, user)
-                # if request.user.is_authenticated:
-                #     print("User da authen",request.user)
-                #     print("Session ID:", request.session.session_key)
-                #     print("User trong session:", request.session.get('_auth_user_id'))  
-                #     print("Django auth backend:", request.session.get('_auth_user_backend'))
-                #     print("item", request.session.items())
                 messages.success(request, "Login Successful!!")
             storage = messages.get_messages(request)
             message_list = [message.message for message in storage]

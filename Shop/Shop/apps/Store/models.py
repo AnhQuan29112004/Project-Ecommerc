@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import Sum
-from Shop.apps.Account.models import Account
+from Shop.apps.Account.models import Account, VendorProfile, UserProfile
 from Shop.apps.Category.models import Category
 from PIL import Image
 from shortuuidfield import ShortUUIDField
@@ -18,11 +18,11 @@ class Product(models.Model):
     slug = models.SlugField(max_length=200, unique=True)
     image = models.ImageField(upload_to=product_upload_path, null=False, blank=False)
     is_available = models.BooleanField(default=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, default='')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, default='', related_name='category')
     description = models.TextField(max_length=200)
     create_at = models.DateTimeField(auto_now_add=True)
     modified_by = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(Account,on_delete=models.CASCADE, null=True, blank=True)
+    vendor = models.ForeignKey(VendorProfile,on_delete=models.CASCADE, null=True, blank=True, related_name='vendorProduct')
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, default='', null=True, blank=True)
     product_status = models.CharField(max_length=50, choices=(
         ('Nháp', 'Nháp'),
