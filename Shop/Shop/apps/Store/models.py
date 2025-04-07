@@ -18,7 +18,7 @@ class Product(models.Model):
     slug = models.SlugField(max_length=200, unique=True)
     image = models.ImageField(upload_to=product_upload_path, null=False, blank=False)
     is_available = models.BooleanField(default=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, default='', related_name='category')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, default='', related_name='categoryProduct')
     description = models.TextField(max_length=200)
     create_at = models.DateTimeField(auto_now_add=True)
     modified_by = models.DateTimeField(auto_now=True)

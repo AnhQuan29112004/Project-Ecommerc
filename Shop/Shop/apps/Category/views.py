@@ -7,7 +7,7 @@ def categories(request):
     categories_count = [
         {
             "category": category,
-            "product_count": category.product_set.filter(is_available=True).count(),
+            "product_count": category.categoryProduct.filter(is_available=True).count(),
         }
         for category in categories
     ]

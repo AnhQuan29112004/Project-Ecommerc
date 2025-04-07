@@ -14,7 +14,7 @@
             {{ form.password }}
         </div>
         {{form.non_field_errors}}
-        <button class="btnLogin" type="submit" data-url="{% url "login" %}" data-tran={{next}} >Login</button>
+        <button class="btnLogin" type="submit" data-url="{% url "login" %}" >Login</button>
     </form>
     {% endif %}
 </div>
@@ -32,7 +32,8 @@
         console.log(formData);
         
         let url = document.querySelector('.btnLogin').getAttribute('data-url');
-        let urlTran = document.querySelector('.btnLogin').getAttribute('data-urlTran');
+        let urlTran = document.querySelector('.btnLogin').getAttribute('data-tran');
+        console.log(urlTran);
         fetch(url,{
             method: 'POST',
             headers: {
@@ -56,7 +57,7 @@
                 messageBox.textContent = data.success;
                 document.querySelector('.message').style.display = 'block';
                 setTimeout(() => {
-                    window.location.href = urlTran;
+                    window.location.href = data.next;
                 }, 2000);
             }else {
                 console.error("Login failed:", data.error);

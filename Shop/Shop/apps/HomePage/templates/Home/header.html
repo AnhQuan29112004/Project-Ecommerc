@@ -43,10 +43,10 @@
                     <p class="title text-muted small mb-1">Welcome guest</p>
                     <div>
                         {% if user.is_authenticated and not user.is_superuser %}
-                        {% comment %} <p class="mb-1">Đã đăng nhập: {{ user }}</p> {% endcomment %}
+                        <p class="mb-1">Đã đăng nhập: {{ user }}</p>
                         <a class="text-dark" href={% url "logout" %}>Log out</a>
                         {% else %}
-                        {% comment %} <p class="mb-1">Đã đăng nhập: {{ user }}</p> {% endcomment %}
+                        <p class="mb-1">Đã đăng nhập: {{ user }}</p>
                         <a class="text-dark me-2" href={% url "login" %}>Sign in</a> |
                         <a class="text-dark ms-2" href={% url "register" %}>Register</a>
                         {% endif %}

@@ -42,6 +42,7 @@ def Register(request):
 def login(request):
     if request.method == "POST":
         next = request.GET.get('next','/')
+        print("next:",next)
         data = json.loads(request.body)
         form = CustormAuthenticationForm(request, data)
         if form.is_valid():
@@ -51,7 +52,7 @@ def login(request):
                 messages.success(request, "Login Successful!!")
             storage = messages.get_messages(request)
             message_list = [message.message for message in storage]
-            return JsonResponse({'success': 'Login Successful!!',"messages": message_list, "user":request.user.username, "next": next})
+            return JsonResponse({'success': 'Login Successful!!',"messages": message_list, "user":request.user.username, "next": '/'})
         else:
             print(form.errors)  
             messages.error(request, "Login Failed!!")
