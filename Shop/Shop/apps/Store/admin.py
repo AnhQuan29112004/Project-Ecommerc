@@ -9,7 +9,7 @@ class ProductAdmin(admin.ModelAdmin):
             return mark_safe(f'<img src="{obj.image.url}" width="50px" />')
         return "No Image" 
 
-    list_display = ['product_name','price','stock','create_at','modified_by', 'view_image']
+    list_display = ['product_name','new_price','stock','create_at','modified_by', 'view_image']
     prepopulated_fields = {'slug':['product_name']}
     
 class VariationAdmin(admin.ModelAdmin):

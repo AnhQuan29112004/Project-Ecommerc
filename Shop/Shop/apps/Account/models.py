@@ -20,6 +20,12 @@ class MyAccountManager(BaseUserManager):
             last_name = last_name,
             phone_number = phone_number
         )
+        if user.role == 'Vendor':
+            profile = VendorProfile.objects.create(user=user)
+            profile.save()
+        elif user.role == 'User':
+            profile = UserProfile.objects.create(user=user)
+            profile.save()
         
         user.set_password(password)
         user.save(using=self._db)
@@ -36,11 +42,16 @@ class MyAccountManager(BaseUserManager):
     
     
 class Account(AbstractBaseUser):
+    class RoleChoices(models.TextChoices):
+        USER = 'User', 'User'
+        VENDOR = 'Vendor', 'Vendor'
+        ADMIN = 'Admin', 'Admin'
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
     email = models.EmailField(max_length=200,unique=True)
     username = models.CharField(max_length=200, unique=True)
     phone_number = models.CharField(max_length=10)
+    role = models.CharField(max_length=10, choices=RoleChoices.choices, default=RoleChoices.USER)
     
     
     date_joined = models.DateTimeField(auto_now=True)
@@ -51,7 +62,7 @@ class Account(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
     
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'phone_number']
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'phone_number','role']
 
     objects = MyAccountManager()
 
@@ -69,18 +80,12 @@ class Account(AbstractBaseUser):
     def get_username(self):
         return super().get_username()
 
-class Address(models.Model):
-    user = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)
-    address = models.CharField(max_length=200)
-    status = models.BooleanField(default=False)    
 
 class UserProfile(models.Model):
     uid = ShortUUIDField(unique=True, max_length=10, default=uid.generate_uid)
     user = models.OneToOneField("Account", on_delete=models.CASCADE, null=True, blank=True)
     picture_profile = models.ImageField(upload_to='user/avt')
-    city = models.CharField(max_length=60)
-    country = models.CharField(max_length=50)
-    address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    address = models.CharField(max_length=100)
     
     def __str__(self):
         return self.user.first_name
@@ -93,14 +98,13 @@ class VendorProfile(models.Model):
     vid = ShortUUIDField(unique=True, max_length=10, default=vid.generate_vid)
     user = models.OneToOneField("Account", on_delete=models.CASCADE, null=True, blank=True)
     picture_profile = models.ImageField(upload_to='vendor/avt')
-    city = models.CharField(max_length=60)
-    country = models.CharField(max_length=50)
     address = models.CharField(max_length=100)
     chat_response_time = models.CharField(max_length=50)
     shipping_on_time = models.CharField(max_length=50)
     title_shop = models.CharField(max_length=50)
     description = models.TextField()
     days_return = models.CharField(max_length=100, default="100")
+    warranty_period = models.CharField(max_length=100, default="100")
     def __str__(self):
         return self.user.first_name
     

@@ -13,7 +13,8 @@ def product_upload_path(instance,filename):
     return f'photos/products/{instance.slug}/{filename}'
 class Product(models.Model):
     product_name = models.CharField(max_length=100, unique=True)
-    price = models.FloatField()
+    new_price = models.FloatField()
+    old_price = models.FloatField()
     stock = models.IntegerField()
     slug = models.SlugField(max_length=200, unique=True)
     image = models.ImageField(upload_to=product_upload_path, null=False, blank=False)
@@ -32,6 +33,8 @@ class Product(models.Model):
         ('Hủy', 'Hủy'),
     ), default='Ok')
     
+    
+    
     status = models.BooleanField(default=True) #hiện hoặc ẩn sản phẩm khi còn hay hêt hàng
     sku = ShortUUIDField(unique=True, max_length=6, default=sku.generate_sku) # Mã sku của sản phẩm
     def __str__(self):
@@ -39,6 +42,12 @@ class Product(models.Model):
     
     def get_url(self):
         pass
+    
+    def get_percentage(self):
+        if self.old_price == 0:
+            return 0
+        else:
+            return round((self.new_price - self.old_price) / self.old_price * 100, 2)
     
 def product_gallery_upload_path(instance,filename):
     return f'photos/products/{instance.product.slug}/gallery/{filename}'

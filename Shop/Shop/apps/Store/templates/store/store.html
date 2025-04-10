@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class='container rounded mt-4 mb-5' style="background-color: #d4eee3">
-    <p class='fs-1'>{{slug_category | title}}</p>
+    <p class='fs-1'>{% if slug_category %}{{slug_category | title}}{% else %}Store{% endif %}</p>
 </div>
 
 <div class="content-store mt-4">
