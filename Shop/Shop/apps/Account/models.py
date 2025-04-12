@@ -8,7 +8,7 @@ from utils.python import uid, vid
 
 
 class MyAccountManager(BaseUserManager):
-    def create_user(self,first_name, last_name,username,  email,phone_number, password=None):
+    def create_user(self,first_name, last_name,username,  email,phone_number, role, password=None):
         if not email:
             raise ValueError("Can nhap email")
         if not username:
@@ -18,21 +18,21 @@ class MyAccountManager(BaseUserManager):
             first_name = first_name,
             email = self.normalize_email(email),
             last_name = last_name,
-            phone_number = phone_number
+            phone_number = phone_number,
+            role = role
         )
-        if user.role == 'Vendor':
-            profile = VendorProfile.objects.create(user=user)
-            profile.save()
-        elif user.role == 'User':
-            profile = UserProfile.objects.create(user=user)
-            profile.save()
-        
         user.set_password(password)
+        print("Password before save:", user.password)  
         user.save(using=self._db)
+        print("Password after save:", user.password)
+        if role == 'Vendor':
+            profile = VendorProfile.objects.create(user=user)
+        elif role == 'User':
+            profile = UserProfile.objects.create(user=user)
         return user
     
-    def create_superuser(self,first_name, last_name,username,phone_number,  email, password):
-        user = self.create_user(first_name, last_name,username, email,phone_number, password)
+    def create_superuser(self,first_name, last_name,username,phone_number,  email, role, password):
+        user = self.create_user(first_name, last_name,username, email,phone_number, role, password)
         user.is_admin = True
         user.is_superuser = True
         user.is_staff = True
@@ -56,7 +56,7 @@ class Account(AbstractBaseUser):
     
     date_joined = models.DateTimeField(auto_now=True)
     last_login = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)

@@ -14,7 +14,7 @@
             {{ form.password }}
         </div>
         {{form.non_field_errors}}
-        <button class="btnLogin" type="submit" data-url="{% url "login" %}" >Login</button>
+        <button class="btnLogin" type="submit" data-url="{% url "loginAPI" %}" >Login</button>
     </form>
     {% endif %}
 </div>
@@ -26,7 +26,7 @@
         event.preventDefault();
         let form = document.querySelector('.formLogin');
         let formData = {
-            username: form.username.value,
+            email: form.username.value,
             password: form.password.value
         };
         console.log(formData);

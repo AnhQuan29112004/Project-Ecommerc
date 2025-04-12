@@ -16,7 +16,7 @@ class CartItem(models.Model):
     is_active = models.BooleanField(default=True)
     variation = models.ManyToManyField(Variation,blank=True)
     def total_item(self):
-        return float(self.product.price * self.quantity)
+        return float(self.product.new_price * self.quantity)
     def __str__(self):
         return self.product.product_name
     

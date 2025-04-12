@@ -17,7 +17,6 @@ def _card_id(request):
         cart = request.session.create()
     return cart
 
-@login_required(login_url='login')
 def add_cart(request, product_id):
     try:
         if request.method != "POST":
@@ -127,7 +126,7 @@ def remove_cart_item(request,cartitem_id):
     cartItem.delete()
     return redirect('cart')
 
-@login_required(login_url='login')
+
 def cart(request, cartItem = None):
     try:
         cart = Cart.objects.get(cart_id = _card_id(request))

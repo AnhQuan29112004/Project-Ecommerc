@@ -14,7 +14,7 @@ def product_upload_path(instance,filename):
 class Product(models.Model):
     product_name = models.CharField(max_length=100, unique=True)
     new_price = models.FloatField()
-    old_price = models.FloatField()
+    old_price = models.FloatField(default=0)
     stock = models.IntegerField()
     slug = models.SlugField(max_length=200, unique=True)
     image = models.ImageField(upload_to=product_upload_path, null=False, blank=False)
