@@ -1,22 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
 <div>
-    {% if form %}
     <form class="formLogin" method="POST">
         {% include "Account/messages.html" %}
         {% csrf_token %}
         <div>
-            {{ form.username.label_tag }} 
-            {{ form.username }}
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" value="{{ form.username.value }}" required>
+            
         </div>
         <div>
-            {{ form.password.label_tag }}
-            {{ form.password }}
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" required>
         </div>
-        {{form.non_field_errors}}
         <button class="btnLogin" type="submit" data-url="{% url "loginAPI" %}" >Login</button>
     </form>
-    {% endif %}
 </div>
 {% endblock content %}
 
