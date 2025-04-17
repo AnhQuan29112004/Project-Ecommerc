@@ -1,6 +1,8 @@
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
+from rest_framework import serializers
+from Shop.apps.Store.serializer import ProductSerializer
+from Shop.apps.Account.models import Account, VendorProfile, UserProfile
 class CustormTokenObtainPair(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
@@ -16,3 +18,14 @@ class CustormTokenObtainPair(TokenObtainPairSerializer):
             "access":data.get("access"),
             "refresh":data.get("refresh")
         }
+
+class VendorSerializer(serializers.ModelSerializer):
+    product_count = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
+    def get_name(self, obj):
+        return obj.user.get_full_name()
+    def get_product_count(self, obj):
+        return obj.vendorProduct.count()
+    class Meta:
+        model = VendorProfile
+        fields = ['id', 'name', 'user', 'product_count']

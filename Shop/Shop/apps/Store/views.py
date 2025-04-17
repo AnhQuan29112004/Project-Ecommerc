@@ -2,8 +2,15 @@ from django.shortcuts import render, get_object_or_404
 from ..Category.models import Category
 from utils.python.app_store import paginate
 from .models import Product
-from Shop.apps.Account.models import VendorProfile
+from Shop.apps.Account.models import VendorProfile, Account
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from rest_framework.generics import ListAPIView
+from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from Shop.apps.Account.serializers import VendorSerializer
+from Shop.apps.Store.serializer import ProductSerializer
+
 def store(request, slug_category=None):
     categories = Category.objects.all()
     if slug_category!=None:
@@ -35,3 +42,36 @@ def vendor_list(request):
     return render(request, 'Vendor/vendor_list.html',{
         'vendors':vendors
     })
+    
+class vendor_list_api(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = VendorProfile.objects.all()
+    serializer_class = VendorSerializer
+    authentication_classes = [JWTAuthentication]
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        vendor = self.request.query_params.get('vendor', None)
+        if vendor:
+            queryset = queryset.filter(vendorProduct__product_name__icontains=vendor)
+        return queryset
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class ProductListView(ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        
