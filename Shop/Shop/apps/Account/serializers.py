@@ -18,14 +18,25 @@ class CustormTokenObtainPair(TokenObtainPairSerializer):
             "access":data.get("access"),
             "refresh":data.get("refresh")
         }
+        
+        
+class AccountInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ['id', 'first_name', 'last_name', 'username', 'email', 'phone_number', 'role']
 
 class VendorSerializer(serializers.ModelSerializer):
     product_count = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
+    product = serializers.SerializerMethodField()
+    user = AccountInfoSerializer(read_only=True) 
     def get_name(self, obj):
         return obj.user.get_full_name()
     def get_product_count(self, obj):
         return obj.vendorProduct.count()
+    def get_product(self, obj):
+        products = obj.vendorProduct.all()
+        return ProductSerializer(products, many=True).data
     class Meta:
         model = VendorProfile
-        fields = ['id', 'name', 'user', 'product_count']
+        fields = ['id', 'name', 'user', 'product_count', 'product']

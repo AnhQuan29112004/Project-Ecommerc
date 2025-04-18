@@ -75,3 +75,29 @@ class ProductListView(ListAPIView):
     def get_queryset(self):
         queryset = super().get_queryset()
         
+        
+class VendorProductListView(ListAPIView):
+    queryset = VendorProfile.objects.all()
+    serializer_class = VendorSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        vendor_id = self.kwargs.get('id')
+        breakpoint()
+        if vendor_id:
+            queryset = queryset.filter(id=vendor_id)
+        return queryset
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+        
