@@ -1,5 +1,4 @@
 from django.db import models
-from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from shortuuidfield import ShortUUIDField
 from utils.python import uid, vid
@@ -29,6 +28,10 @@ class MyAccountManager(BaseUserManager):
             profile = VendorProfile.objects.create(user=user)
         elif role == 'User':
             profile = UserProfile.objects.create(user=user)
+        if user.usercart.exists() == False:
+            from Shop.apps.carts.models import Cart
+            cart = Cart.objects.create(user=user)
+            cart.save()
         return user
     
     def create_superuser(self,first_name, last_name,username,phone_number,  email, role, password):

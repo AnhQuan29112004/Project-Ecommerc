@@ -39,4 +39,4 @@ class VendorSerializer(serializers.ModelSerializer):
         return ProductSerializer(products, many=True).data
     class Meta:
         model = VendorProfile
-        fields = ['id', 'name', 'user', 'product_count', 'product']
+        fields = ['id','vid', 'name', 'user', 'product_count', 'product']

@@ -14,6 +14,7 @@ from Shop.apps.Account.serializers import CustormTokenObtainPair
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework_simplejwt.authentication import JWTAuthentication
 import pdb
 import json
 
@@ -21,18 +22,15 @@ import json
 # Create your views here.
 class LogoutAPI(APIView):
     permission_classes = [IsAuthenticated]
-    authentication_classes = [CustomJWTAuthentication]
+    authentication_classes = [JWTAuthentication]
 
     def post(self, request):
         try:
             response = Response({
                 "message": "Logout successfully", 
                 "code": "SUCCESS",
-                "next": reverse("loginview")
             }, status=status.HTTP_200_OK)
             
-            response.delete_cookie('refresh')
-            response.delete_cookie('access')
             return response
             
         except Exception as e:
@@ -68,7 +66,7 @@ def registerview(request):
 
 class GetUserView(APIView):
     permission_classes = [IsAuthenticated]
-    authentication_classes = [CustomJWTAuthentication]
+    authentication_classes = [JWTAuthentication]
 
     def get(self, request):
         try:
@@ -80,7 +78,6 @@ class GetUserView(APIView):
                 'first_name': user.first_name,
                 'last_name': user.last_name,
                 'phone_number': user.phone_number,
-                'birth': user.birth,
                 'check': user.is_authenticated,
             }
             return Response({
@@ -112,8 +109,6 @@ class LoginAPI(TokenObtainPairView):
                     'role': user.role,
                     'code':"SUCCESS"
                 }, status=status.HTTP_200_OK)
-            response.set_cookie(key='access', value=data.get("access"), httponly=True, samesite='None', secure=True)
-            response.set_cookie(key='refresh', value=data.get("refresh"), httponly=True, samesite='None', secure=True)
             
             return response
         else:

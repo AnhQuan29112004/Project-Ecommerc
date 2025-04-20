@@ -72,8 +72,6 @@ class ProductListView(ListAPIView):
     permission_classes = [AllowAny]
     authentication_classes = [JWTAuthentication]
     
-    def get_queryset(self):
-        queryset = super().get_queryset()
         
         
 class VendorProductListView(ListAPIView):
@@ -85,7 +83,6 @@ class VendorProductListView(ListAPIView):
     def get_queryset(self):
         queryset = super().get_queryset()
         vendor_id = self.kwargs.get('id')
-        breakpoint()
         if vendor_id:
             queryset = queryset.filter(id=vendor_id)
         return queryset

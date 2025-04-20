@@ -5,6 +5,7 @@ from Shop.apps.Account.models import Account
 class Cart(models.Model):
     cart_id = models.CharField(max_length=250, blank=True)
     date_add = models.DateTimeField(auto_now_add=True)
+    user = models.OneToOneField(Account, on_delete=models.CASCADE, null=True, blank=True, related_name="usercart")
     
     def __str__(self):
         return self.cart_id
