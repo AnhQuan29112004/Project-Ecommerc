@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid bg-body-tertiary">
+    <div class="container d-flex justify-content-between pt-4 pb-4">
+        {% csrf_token %}
+        <div class="card col-lg-8">
+            {% if cart_item %}
+                <div class="table w-100">
+                    <table class="table w-100">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for i in cart_item %}
+                            <tr>
+                                <th>
+                                    <img style="width: 100px; heigth:100px" src='{{i.product.image.url}}'>{{i.product.product_name}}
+                                    {% for j in i.variation.all %}
+                                    <div>{{j.variation_value}}</div>
+                                    {% endfor %}
+                                </th>
+                                <th>
+                                    <div class="item_quantity d-flex">
+                                        <div class="card"><button class="btnRemoveItem" onclick="removeOne(this)" 
+                                            data-id={{i.product.id}} data-url="{% url 'remove_cart' i.product.id %}" 
+                                            data-color="{% for j in i.variation.all %}{% if j.variation_category == 'color' %}{{ j.variation_value }}{% endif %}{% endfor %}" 
+                                            data-size="{% for j in i.variation.all %}{% if j.variation_category == 'size' %}{{ j.variation_value }}{% endif %}{% endfor %}" 
+                                            data-quantity="{{i.quantity}}">
+                                            <i class="bi bi-dash"></i>
+                                            </button></div>
+                                        <div class="quantity">{{i.quantity}}</div>
+                                        <div class="card">
+                                            <button class="btnAddItem" onclick="addToCart(this)" 
+                                            data-id={{i.product.id}} data-url="{% url 'add_cart' i.product.id %}" 
+                                            data-color="{% for j in i.variation.all %}{% if j.variation_category == 'color' %}{{ j.variation_value }}{% endif %}{% endfor %}" 
+                                            data-size="{% for j in i.variation.all %}{% if j.variation_category == 'size' %}{{ j.variation_value }}{% endif %}{% endfor %}" 
+                                            data-quantity="{{i.quantity}}">
+                                            <i class="bi bi-plus-lg"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th><div class="totalItemCart">{{i.total_item}}</div></th>
+                                <th><a href={% url "remove_cart_item" i.id%}><button typy="button" class="btn btn-danger">Remove</button></a></th>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <h1>Can them vao gio hang</h1>
+            {% endif %}
+        </div>
+
+        <div class="card col-lg-3">
+            <div class="d-flex">
+                <p>Total Price: </p>
+                <span id="total">{{total}}</span>
+            </div>
+            <div class="d-flex">
+                <p>Tax: </p>
+                <span id="tax">{{tax}}</span>
+            </div>
+            <div class="d-flex">
+                <p>Grand Price: </p>
+                <span id="grand_total">{{grand_total}}</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+
+{% block script %}
+<script>
+
+    async function removeOne(product){
+        const parentProduct = product.closest(".item_quantity");
+        const url = product.getAttribute("data-url");
+        let response = await fetch(url, {
+            method: "DELETE",
+            headers: {
+                'X-CSRFToken': getCSRFToken(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                color:product.dataset.color,
+                size: product.dataset.size,
+                quantity:1
+            }),
+            credentials: 'same-origin'
+        })
+
+        if (response.ok){
+            let data = await response.json()
+            if (data.message === "Delete one success") {
+                const updateQuantity = parentProduct.querySelector(".quantity");
+                if (updateQuantity) {
+                    updateQuantity.innerText = data.item.quantity;
+                } else {
+                    console.error('Could not find quantity element');
+                }
+                
+                const priceCell = parentProduct.closest('tr').querySelector('.totalItemCart');
+                if (priceCell) {
+                    priceCell.innerText = data.item.total_item;
+                } else {
+                    console.error('Could not find price cell');
+                }
+
+                
+                const totalElement = document.getElementById('total');
+                const taxElement = document.getElementById('tax');
+                const grandTotalElement = document.getElementById('grand_total');
+                
+                if (totalElement) totalElement.innerText = data.total;
+                if (taxElement) taxElement.innerText = data.tax;
+                if (grandTotalElement) grandTotalElement.innerText = data.grand_total;
+            } 
+            else if(data.message === "Delete item success") {
+                parentProduct.closest('tr').remove();
+                const totalElement = document.getElementById('total');
+                const taxElement = document.getElementById('tax');
+                const grandTotalElement = document.getElementById('grand_total');
+                
+                if (totalElement) totalElement.innerText = data.total;
+                if (taxElement) taxElement.innerText = data.tax;
+                if (grandTotalElement) grandTotalElement.innerText = data.grand_total;
+            }
+        }
+    }
+
+
+    function addToCart(product) {
+        const parentProduct = product.closest(".item_quantity");
+        const url = product.getAttribute("data-url");
+    
+        fetch(url, {
+            method: "POST",
+            headers: {
+                'X-CSRFToken': getCSRFToken(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                color:product.dataset.color,
+                size: product.dataset.size,
+                quantity:1
+            }),
+            credentials: 'same-origin'
+        })
+        .then(async response => {
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Server response:', errorText);
+                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Success response:', data);
+            if (data.message === "Add success") {
+                const updateQuantity = parentProduct.querySelector(".quantity");
+                if (updateQuantity) {
+                    updateQuantity.innerText = data.item.quantity;
+                } else {
+                    console.error('Could not find quantity element');
+                }
+                
+                const priceCell = parentProduct.closest('tr').querySelector('.totalItemCart');
+                if (priceCell) {
+                    priceCell.innerText = data.item.total_item;
+                } else {
+                    console.error('Could not find price cell');
+                }
+                
+                const totalElement = document.getElementById('total');
+                const taxElement = document.getElementById('tax');
+                const grandTotalElement = document.getElementById('grand_total');
+                
+                if (totalElement) totalElement.innerText = data.total;
+                if (taxElement) taxElement.innerText = data.tax;
+                if (grandTotalElement) grandTotalElement.innerText = data.grand_total;
+            } else {
+                console.error('Unexpected response message:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Detailed error:", error);
+            alert(`Failed to update cart: ${error.message}`);
+        });
+    }
+    
+    
+</script>
+{% endblock script %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div>
+    {% if form %}
+    <form method="POST">
+        {% include "Account/messages.html" %}
+        {% csrf_token %}
+        {% for i in form %}
+        {{i.label_tag}}
+        {{i}}
+        {{i.errors}}
+        {% endfor %}
+        {{form.non_field_errors}}
+        <button type="submit" id="btnRegister" onclick="Register()">Register</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock content %}
+
+{% block script %}
+<script>
+</script>
+{% endblock script %}

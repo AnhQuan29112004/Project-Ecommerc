@@ -1,0 +1,71 @@
+<header class="section-header fixed-header">
+    <section class="header-main border-bottom">
+        <div class="container d-flex align-items-center flex-wrap">
+            
+            <nav class="navbar navbar-expand-lg py-3 col-md-8 justify-content-start">
+                <div class="container d-flex">
+                    <a class="navbar-brand fw-bold text-dark me-3" href="#">GREATKART</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav mx-auto">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Categories
+                                </a>
+                                <ul class="dropdown-menu fade" aria-labelledby="shopDropdown">
+                                    <li><a class="dropdown-item" href={% url "categories" %}>All Categories</a></li>
+                                    {% for i in links %}
+                                    <li><a class="dropdown-item" href={% url "get_category" i.slug_category %}>{{ i.category_name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            <a href={% url "store" %} class="text-decoration-none align-content-center">Store</a>
+                        </ul>
+                        <div class="d-flex align-items-center flex-grow-1 w-100">
+                            <form class="formSearch d-flex flex-grow-1">
+                                <input type="text" name="keyword" class="inputSearch form-control me-2" placeholder="Search">
+                                <button type="submit" class="btnSearch btn btn-primary">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </form>
+                        </div>
+                        
+                    </div>
+                
+                        <!-- Store Button -->
+                    
+                </div>
+            </nav>
+            <div class="d-flex align-items-center col-md-4 justify-content-end">
+                <div class="me-3">
+                    <p class="title text-muted small mb-1">Welcome guest</p>
+                    <div>
+                        {% if user.is_authenticated and not user.is_superuser %}
+                        <p class="mb-1">Đã đăng nhập: {{ user }}</p>
+                        <a class="text-dark" href={% url "logout" %}>Log out</a>
+                        {% else %}
+                        <p class="mb-1">Đã đăng nhập: {{ user }}</p>
+                        <a class="text-dark me-2" href={% url "login" %}>Sign in</a> |
+                        <a class="text-dark ms-2" href={% url "register" %}>Register</a>
+                        {% endif %}
+                    </div>
+                </div>
+        
+                <!-- Giỏ hàng -->
+                <div class="position-relative">
+                    <a href={% url "cart" %} class="text-dark">
+                        <i class="bi bi-cart fs-4"></i>
+                    </a>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {{ counter_cart }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        
+    </section>
+</header>
+

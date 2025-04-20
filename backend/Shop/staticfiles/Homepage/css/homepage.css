@@ -1,0 +1,13 @@
+.fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: white; 
+    z-index: 1030; 
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
+}
+  
+.body-padding {
+    padding-top: 80px; 
+}

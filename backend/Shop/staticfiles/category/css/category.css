@@ -1,0 +1,25 @@
+.category-card {
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: relative;
+}
+.category-card img {
+    width: 100%;
+    border-radius: 10px;
+}
+.fav-icon {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: orange;
+    padding: 5px;
+    border-radius: 50%;
+}
+.sidebar {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+}

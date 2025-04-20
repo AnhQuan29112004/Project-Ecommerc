@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+    <section class="section-intro padding-y-sm">
+        <div class="container">
+        
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <img class="swiper-slide" style="" src= {%static "images/banner/Đen và Màu kem Tối giản Bán lẻ Thanh lịch Đồ điện tử và Thiết bị Banner.png" %}>
+                <img class="swiper-slide" style="" src= {%static "images/banner/WIN_20231130_23_09_14_Pro.jpg" %}>
+            </div>
+        </div>
+        
+        </div> <!-- container //  -->
+        </section>
+        <!-- ========================= SECTION MAIN END// ========================= -->
+        
+        <!-- ========================= SECTION  ========================= -->
+        <section class="section-name padding-y-sm">
+        <div class="container">
+        
+        <header class="section-heading d-flex justify-content-between align-items-center py-2">
+            <h3 class="section-title">Popular products</h3>
+            <a href="./store.html" class="btn btn-outline-primary float-right ">See all</a>
+        </header><!-- sect-heading -->
+        
+            
+        <div class="row">
+            {% for i in list_product %}
+                <div class="col-md-3">
+                    <div class="card">
+                        <a href="./product-detail.html" class="d-flex justify-content-center"> 
+                            <img class="img-fluid product-img" src="{{i.image.url}}"> </a>
+                        <div class="p-md-3 p-sm-0" >
+                            <a href="./product-detail.html" class="text-black text-decoration-none ">{{i.product_name}}</a>
+                            <div class=""><p class="fw-bold">${{i.price}}</p></div> <!-- price-wrap.// -->
+                        </div>
+
+                        <button type='button' class="btn btn-primary">
+                            Add to card
+                        </button>
+                    </div>
+                </div> <!-- col.// -->
+            {% endfor %}
+        </div> <!-- row.// -->
+        
+        </div><!-- container // -->
+        </section>
+        <!-- ========================= SECTION  END// ========================= -->
+        
+        
+        
+        
+    
+    
+{% endblock content %}
+
+{% block script %}
+<script>
+    const swiper = new Swiper(".swiper-container", {
+        direction: "horizontal",
+        autoplay: {
+          delay: 3000,
+        },
+      });
+</script>
+{% endblock script %}
+    
