@@ -9,7 +9,8 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from Shop.apps.Account.serializers import VendorSerializer
-from Shop.apps.Store.serializer import ProductSerializer
+from Shop.apps.Store.serializer import ProductSerializer, CategorySerializer
+from rest_framework.filters import SearchFilter
 
 def store(request, slug_category=None):
     categories = Category.objects.all()
@@ -71,13 +72,14 @@ class ProductListView(ListAPIView):
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
     authentication_classes = [JWTAuthentication]
-    
+    filter_backends = [SearchFilter]
+    search_fields = ['name']
         
         
 class VendorProductListView(ListAPIView):
     queryset = VendorProfile.objects.all()
     serializer_class = VendorSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
     def get_queryset(self):
@@ -98,3 +100,9 @@ class VendorProductListView(ListAPIView):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
         
+class CategoryListView(ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
