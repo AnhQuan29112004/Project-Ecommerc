@@ -11,6 +11,12 @@ export const login = async (email, password) => {
   return response.data;
 };
 
+export const getAccesstoken = async (refresh) => {
+  const response = await api.post('/auth/getAccesstoken/', { refresh });
+  localStorage.setItem('accessToken', data.accessToken);
+  return response.data;
+}
+
 export const register = async (username, email, password) => {
   const response = await api.post('/auth/register/', { username, email, password });
   return response.data;

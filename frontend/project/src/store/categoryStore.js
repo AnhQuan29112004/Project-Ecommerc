@@ -10,6 +10,7 @@ const useCategoryStore = create((set) => ({
     set({ loading: true });
     try {
       const data = await getCategories();
+      console.log('Categories:', data);
       set({ categories: data, loading: false, error: null });
     } catch (error) {
       set({ error: 'Lỗi khi tải danh mục.', loading: false });

@@ -10,6 +10,7 @@ const useProductStore = create((set) => ({
     set({ loading: true });
     try {
       const data = await getAllProducts();
+      console.log('Fetched products:', data); // Log the fetched products
       set({ products: data, loading: false, error: null });
     } catch (error) {
       set({ error: 'Lỗi khi tải sản phẩm.', loading: false });

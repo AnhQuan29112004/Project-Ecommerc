@@ -11,6 +11,7 @@ const useAuthStore = create((set) => ({
     try {
       await login(email, password);
       const userData = await getUser();
+      console.log('User data:', userData);
       set({ user: userData, isAuthenticated: true, error: null });
     } catch (error) {
       set({ error: 'Đăng nhập thất bại. Vui lòng kiểm tra thông tin.' });

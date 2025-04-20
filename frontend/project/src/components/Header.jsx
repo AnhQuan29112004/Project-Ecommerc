@@ -2,21 +2,37 @@ import { Link, useNavigate } from 'react-router-dom';
 import useAuthStore from '../store/authStore';
 import useCartStore from '../store/cartStore';
 import useCategoryStore from '../store/categoryStore';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 const Header = () => {
   const { user, isAuthenticated, fetchUser, logout } = useAuthStore();
   const { categories, fetchCategories, loading: categoryLoading } = useCategoryStore();
   const { cartCount, fetchCartCount } = useCartStore();
   const [searchQuery, setSearchQuery] = useState('');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     if (isAuthenticated) {
       fetchUser();
+      fetchCategories();
     }
-    fetchCategories();
+    
   }, [isAuthenticated, fetchUser, fetchCategories]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleLogout = async () => {
     await logout();
@@ -29,111 +45,182 @@ const Header = () => {
   };
 
   return (
-    <header className="section-header fixed-top bg-white border-bottom">
-      <div className="container d-flex align-items-center flex-wrap py-3">
-        <nav className="navbar navbar-expand-lg col-md-8">
-          <div className="container-fluid">
-            <Link className="navbar-brand fw-bold text-dark me-3" to="/home">
-              GREATKART
-            </Link>
-            <button
-              className="navbar-toggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarNav"
-              aria-controls="navbarNav"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
+    <header className="sticky top-0 bg-white border-b shadow-sm z-10">
+      <div className="px-4 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        {/* Logo and Menu Toggle */}
+        <div className="flex items-center justify-between">
+          <Link to="/home" className="text-2xl font-bold text-gray-800">
+            GREATKART
+          </Link>
+          <button
+            className="md:hidden text-gray-600 focus:outline-none"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <span className="navbar-toggler-icon"></span>
-            </button>
-            <div className="collapse navbar-collapse" id="navbarNav">
-              <ul className="navbar-nav mx-auto">
-                <li className="nav-item dropdown">
-                  <a
-                    className="nav-link dropdown-toggle"
-                    href="#"
-                    id="shopDropdown"
-                    role="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d={isMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
+              />
+            </svg>
+          </button>
+        </div>
+
+        {/* Navigation and Search */}
+        <div
+          className={`${
+            isMenuOpen ? 'flex' : 'hidden'
+          } md:flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto`}
+        >
+          {/* Navigation Links */}
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative" ref={dropdownRef}>
+              <button
+                className="text-gray-600 hover:text-gray-800 flex items-center"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              >
+                Categories
+                <svg
+                  className="w-4 h-4 ml-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              {isDropdownOpen && (
+                <div className="absolute top-full left-0 mt-2 w-48 bg-white border rounded-lg shadow-lg">
+                  <Link
+                    to="/categories"
+                    className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
+                    onClick={() => setIsDropdownOpen(false)}
                   >
-                    Categories
-                  </a>
-                  <ul className="dropdown-menu" aria-labelledby="shopDropdown">
-                    <li>
-                      <Link className="dropdown-item" to="/categories">
-                        All Categories
-                      </Link>
-                    </li>
-                    {categoryLoading ? (
-                      <li><span className="dropdown-item">Đang tải...</span></li>
-                    ) : (
-                      categories.map((category) => (
-                        <li key={category.id}>
-                          <Link
-                            className="dropdown-item"
-                            to={`/category/${category.slug_category}`}
-                          >
-                            {category.category_name}
-                          </Link>
-                        </li>
-                      ))
-                    )}
-                  </ul>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/store">
-                    Store
+                    All Categories
                   </Link>
-                </li>
-              </ul>
-              <form className="d-flex flex-grow-1" onSubmit={handleSearch}>
-                <input
-                  type="text"
-                  className="form-control me-2"
-                  placeholder="Search"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <button type="submit" className="btn btn-primary">
-                  <i className="bi bi-search"></i>
-                </button>
-              </form>
+                  {categoryLoading ? (
+                    <div className="px-4 py-2 text-gray-600">Đang tải...</div>
+                  ) : (
+                    categories.map((category) => (
+                      <Link
+                        key={category.id}
+                        to={`/category/${category.slug_category}`}
+                        className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        {category.category_name}
+                      </Link>
+                    ))
+                  )}
+                </div>
+              )}
             </div>
+            <Link
+              to="/store"
+              className="text-gray-600 hover:text-gray-800"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Store
+            </Link>
           </div>
-        </nav>
-        <div className="d-flex align-items-center col-md-4 justify-content-end">
-          <div className="me-3">
-            <p className="text-muted small mb-1">
+
+          {/* Search Bar */}
+          <div className="flex w-full md:w-auto">
+            <input
+              type="text"
+              className="w-full md:w-64 px-3 py-1 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Search"
+              style={{ backgroundColor: 'white',
+                color: 'black',
+                border: '1px solid #ccc',
+                padding: '10px',
+                borderRadius: '4px', }}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button
+              onClick={handleSearch}
+              className="bg-blue-500 text-white px-3 py-1 rounded-r-lg hover:bg-blue-600"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* User and Cart */}
+        <div className="flex items-center gap-4">
+          <div className="text-right">
+            <p className="text-gray-600 text-sm">
               {user ? `Welcome ${user.data.username}` : 'Welcome guest'}
             </p>
-            <div>
+            <div className="text-sm">
               {isAuthenticated ? (
                 <>
-                  <span className="me-2">Đã đăng nhập: </span>
-                  <button className="text-dark" onClick={handleLogout}>
+                  <span className="text-gray-600">Đã đăng nhập: </span>
+                  <button
+                    onClick={handleLogout}
+                    className="text-blue-500 hover:underline"
+                  >
                     Log out
                   </button>
                 </>
               ) : (
                 <>
-                  <Link className="text-dark me-2" to="/home/login">
+                  <Link to="/home/login" className="text-blue-500 hover:underline">
                     Sign in
                   </Link>
-                  |
-                  <Link className="text-dark ms-2" to="/register">
+                  <span className="mx-2">|</span>
+                  <Link to="/register" className="text-blue-500 hover:underline">
                     Register
                   </Link>
                 </>
               )}
             </div>
           </div>
-          <div className="position-relative">
-            <Link to="/cart" className="text-dark">
-              <i className="bi bi-cart fs-4"></i>
+          <div className="relative">
+            <Link to="/cart" className="text-gray-600 hover:text-gray-800">
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
             </Link>
-            <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
               {cartCount}
             </span>
           </div>
