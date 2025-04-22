@@ -4,7 +4,7 @@ from utils.python.app_store import paginate
 from .models import Product
 from Shop.apps.Account.models import VendorProfile, Account
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView, CreateAPIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -74,6 +74,16 @@ class ProductListView(ListAPIView):
     authentication_classes = [JWTAuthentication]
     filter_backends = [SearchFilter]
     search_fields = ['name']
+    
+class ProductDetailView(RetrieveAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
+    
+    def get_object(self):
+        slug = self.kwargs.get('slug')
+        return get_object_or_404(Product, slug=slug)
         
         
 class VendorProductListView(ListAPIView):
