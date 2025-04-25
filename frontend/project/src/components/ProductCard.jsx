@@ -12,19 +12,19 @@ const ProductCard = ({ product, onDelete }) => {
       {product.image && (
         <img
           src={product.image}
-          alt={product.name}
+          alt={product.product_name}
           className="card-img-top mb-3"
           style={{ maxHeight: '200px', objectFit: 'cover' }}
         />
       )}
       <div className="card-body">
-        <h3 className="card-title text-lg font-semibold">{product.name}</h3>
-        <p className="text-gray-600">${product.price}</p>
+        <h3 className="card-title text-lg font-semibold">{product.product_name}</h3>
+        <p className="text-gray-600">${product.new_price}</p>
         <p className="text-sm text-gray-500">{product.description}</p>
         <div className="mt-2 space-x-2">
           <button
             className="btn btn-primary"
-            onClick={() => window.location.href = `/product/${product.id}`}
+            onClick={() => window.location.href = `/product/${product.slug}`}
           >
             Xem
           </button>

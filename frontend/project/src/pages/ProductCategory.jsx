@@ -11,8 +11,7 @@ const ProductCategory = () => {
   useEffect(() => {
     const fetchCategoryProducts = async () => {
       try {
-        // Giả lập API lấy sản phẩm theo danh mục
-        const response = await fetch(`/api/v1/category/${slug}/products/`); // Cần thêm API endpoint
+        const response = await fetch(`/api/v1/category/${slug}/products/`); 
         const data = await response.json();
         setProducts(data.products || []);
         setCategoryName(data.category_name || slug);
