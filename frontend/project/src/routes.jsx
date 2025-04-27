@@ -36,7 +36,7 @@ const router = createBrowserRouter([
             element: <Categories />,
           },
           {
-            path: 'category/:slug',
+            path: 'categories/:slug',
             element: <Category />,
           },
           {

@@ -1,18 +1,18 @@
-const ProductDetails = () => {
+const ProductDetails = ({productDetail}) => {
     return (
         <div className="md:w-1/2">
-            <h1 className="text-2xl font-bold text-gray-800">h-resh Pear</h1>
+            <h1 className="text-2xl font-bold text-gray-800">{productDetail.product_name}</h1>
             <div className="flex items-center mt-2">
                 <div className="text-yellow-500">★★★★★</div>
                 <span className="ml-2 text-gray-600 text-sm">(32 reviews)</span>
             </div>
             <div className="mt-4">
-                <span className="line-through text-red-500 text-lg">$25.00</span>
-                <span className="text-green-600 font-bold text-xl ml-2">$10.00</span>
-                <span className="text-green-600 ml-2">-40% Off</span>
+                <span className="line-through text-red-500 text-lg">${productDetail.old_price}</span>
+                <span className="text-green-600 font-bold text-xl ml-2">${productDetail.new_price}</span>
+                <span className="text-green-600 ml-2">{productDetail.percentage}% Off</span>
             </div>
             <p className="mt-4 text-gray-700">
-                This is a really fresh pear. This is a really fresh pear. This is a really fresh pear. This is a really fresh pear. This is a really fresh pear. This...
+            <p className="mt-4 text-gray-600">{productDetail.description}</p>
             </p>
             <div className="flex items-center mt-6">
                 <input
@@ -20,6 +20,7 @@ const ProductDetails = () => {
                     defaultValue="1"
                     min="1"
                     className="w-16 p-2 border border-gray-300 rounded-md"
+                    style={{ backgroundColor:"white" }}
                 />
                 <button className="ml-4 bg-green-500 text-white px-4 py-2 rounded-md flex items-center">
                     <svg
@@ -55,14 +56,14 @@ const ProductDetails = () => {
                     </svg>
                 </button>
             </div>
-            <div className="mt-6 text-sm text-gray-600">
+            {/* <div className="mt-6 text-sm text-gray-600">
                 <p>Type: Organic</p>
                 <p>MFG: 18-Oct-2022</p>
                 <p>EXP: 100 Days</p>
                 <p>SKU: stx2197</p>
                 <p>Tags: Snack, Organic, Brown</p>
                 <p>Stock: 10 Items in Stock</p>
-            </div>
+            </div> */}
         </div>
     );
 };
