@@ -43,6 +43,7 @@ class Product(models.Model):
     def get_url(self):
         pass
     
+    @property
     def get_percentage(self):
         if self.old_price == 0:
             return 0

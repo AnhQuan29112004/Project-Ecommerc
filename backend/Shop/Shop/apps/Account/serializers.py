@@ -1,7 +1,6 @@
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
-from Shop.apps.Store.serializer import ProductSerializer
 from Shop.apps.Account.models import Account, VendorProfile, UserProfile
 class CustormTokenObtainPair(TokenObtainPairSerializer):
     @classmethod
@@ -27,16 +26,18 @@ class AccountInfoSerializer(serializers.ModelSerializer):
 
 class VendorSerializer(serializers.ModelSerializer):
     product_count = serializers.SerializerMethodField()
-    name = serializers.SerializerMethodField()
-    product = serializers.SerializerMethodField()
-    user = AccountInfoSerializer(read_only=True) 
+    name = serializers.SerializerMethodField() 
     def get_name(self, obj):
-        return obj.user.get_full_name()
+        return obj.VendorProfile.get_full_name()
     def get_product_count(self, obj):
         return obj.vendorProduct.count()
-    def get_product(self, obj):
-        products = obj.vendorProduct.all()
-        return ProductSerializer(products, many=True).data
+    
+    def to_representation(self, instance):
+
+        representation = super().to_representation(instance)
+        VendorProfile = AccountInfoSerializer(instance.VendorProfile,read_only=True, many=False).data
+        representation = {**representation, **VendorProfile}
+        return representation
     class Meta:
         model = VendorProfile
-        fields = ['id','vid', 'name', 'user', 'product_count', 'product']
+        fields = ['id','vid', 'name', 'product_count','address','chat_response_time','shipping_on_time','title_shop','description','days_return','warranty_period','picture_profile']

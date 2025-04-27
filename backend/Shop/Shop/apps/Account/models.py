@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from shortuuidfield import ShortUUIDField
 from utils.python import uid, vid
+from django.contrib.auth.models import PermissionsMixin
 
 # Create your models here.
 
@@ -44,7 +45,7 @@ class MyAccountManager(BaseUserManager):
         return user
     
     
-class Account(AbstractBaseUser):
+class Account(AbstractBaseUser, PermissionsMixin):
     class RoleChoices(models.TextChoices):
         USER = 'User', 'User'
         VENDOR = 'Vendor', 'Vendor'
@@ -76,7 +77,7 @@ class Account(AbstractBaseUser):
         return self.email
 
     def has_perm(self, perm, obj=None):
-        return self.is_admin
+        return super().has_perm(perm, obj)
 
     def has_module_perms(self, app_label):
         return True
@@ -99,7 +100,7 @@ class UserProfile(models.Model):
     
 class VendorProfile(models.Model):
     vid = ShortUUIDField(unique=True, max_length=10, default=vid.generate_vid)
-    user = models.OneToOneField("Account", on_delete=models.CASCADE, null=True, blank=True)
+    VendorProfile = models.OneToOneField("Account", on_delete=models.CASCADE, null=True, blank=True)
     picture_profile = models.ImageField(upload_to='vendor/avt')
     address = models.CharField(max_length=100)
     chat_response_time = models.CharField(max_length=50)
