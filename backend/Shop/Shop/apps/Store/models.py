@@ -5,12 +5,18 @@ from Shop.apps.Category.models import Category
 from PIL import Image
 from shortuuidfield import ShortUUIDField
 from utils.python import sku
+from taggit.managers import TaggableManager
+from ckeditor_uploader.fields import RichTextUploadingField
 # Create your models here.
 
 class Tag(models.Model):
     pass
+
+
 def product_upload_path(instance,filename):
     return f'photos/products/{instance.slug}/{filename}'
+
+
 class Product(models.Model):
     product_name = models.CharField(max_length=100, unique=True)
     new_price = models.FloatField()
@@ -20,11 +26,13 @@ class Product(models.Model):
     image = models.ImageField(upload_to=product_upload_path, null=False, blank=False)
     is_available = models.BooleanField(default=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, default='', related_name='categoryProduct')
-    description = models.TextField(max_length=200)
+    # description = models.TextField(max_length=200)
+    description = RichTextUploadingField()
+    specification = RichTextUploadingField(default='')
     create_at = models.DateTimeField(auto_now_add=True)
     modified_by = models.DateTimeField(auto_now=True)
     vendor = models.ForeignKey(VendorProfile,on_delete=models.CASCADE, null=True, blank=True, related_name='vendorProduct')
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, default='', null=True, blank=True)
+    tag = TaggableManager(blank=True)
     product_status = models.CharField(max_length=50, choices=(
         ('Nháp', 'Nháp'),
         ('Từ chối', 'Từ chối'),
@@ -70,8 +78,10 @@ class ReviewRating(models.Model):
     create_at = models.DateTimeField(auto_now_add=True)
     modified_by = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(Account,on_delete=models.CASCADE, null=True, blank=True)
-    product = models.ForeignKey("Product", on_delete=models.CASCADE) 
-    subject = models.CharField(max_length=50)
+    product = models.ForeignKey("Product", on_delete=models.CASCADE, related_name='productReview') 
+    subject = models.CharField(max_length=50, default='')
+    create_by = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True, default=None, related_name='reviewRating')
+    is_active = models.BooleanField(default=True)
     
     def __str__(self):
         return self.subject

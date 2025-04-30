@@ -28,14 +28,14 @@ class VendorSerializer(serializers.ModelSerializer):
     product_count = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField() 
     def get_name(self, obj):
-        return obj.VendorProfile.get_full_name()
+        return obj.user.get_full_name()
     def get_product_count(self, obj):
         return obj.vendorProduct.count()
     
     def to_representation(self, instance):
 
         representation = super().to_representation(instance)
-        VendorProfile = AccountInfoSerializer(instance.VendorProfile,read_only=True, many=False).data
+        VendorProfile = AccountInfoSerializer(instance.user,read_only=True, many=False).data
         representation = {**representation, **VendorProfile}
         return representation
     class Meta:

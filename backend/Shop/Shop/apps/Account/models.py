@@ -100,7 +100,7 @@ class UserProfile(models.Model):
     
 class VendorProfile(models.Model):
     vid = ShortUUIDField(unique=True, max_length=10, default=vid.generate_vid)
-    VendorProfile = models.OneToOneField("Account", on_delete=models.CASCADE, null=True, blank=True)
+    user = models.OneToOneField("Account", on_delete=models.CASCADE, null=True, blank=True)
     picture_profile = models.ImageField(upload_to='vendor/avt')
     address = models.CharField(max_length=100)
     chat_response_time = models.CharField(max_length=50)

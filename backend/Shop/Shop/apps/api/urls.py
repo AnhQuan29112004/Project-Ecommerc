@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 from Shop.apps.Account.views import CustomTokenRefreshView, LoginAPI, LogoutAPI, RegisterAPI, GetUserView
-from Shop.apps.Store.views import vendor_list_api,VendorProductListView, ProductListView, CategoryListView, ProductDetailView
+from Shop.apps.Store.views import RatingCreateView, ProductSameTagView, vendor_list_api,VendorProductListView, ProductListView, CategoryListView, ProductDetailView
 version_api = config('VERSION_API')
 
 urlpatterns = [
@@ -22,5 +22,7 @@ urlpatterns = [
     path(f'{version_api}/categories/', CategoryListView.as_view(), name='vendorListProduct'),
     path(f'{version_api}/products/', ProductListView.as_view(), name='vendorListProduct'),
     path(f'{version_api}/products/<slug:slug>', ProductDetailView.as_view(), name='vendorListProduct'),
+    path(f'{version_api}/products/tag/<slug:tag>', ProductSameTagView.as_view(), name='vendorListProduct'),
+    path(f'{version_api}/rating/create', RatingCreateView.as_view(), name='vendorListProduct'),
 
 ]

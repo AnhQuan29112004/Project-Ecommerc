@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from ..Category.models import Category
 from utils.python.app_store import paginate
-from .models import Product
+from .models import Product, ReviewRating
 from Shop.apps.Account.models import VendorProfile, Account
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView, CreateAPIView
@@ -9,8 +9,10 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from Shop.apps.Account.serializers import VendorSerializer
-from Shop.apps.Store.serializer import ProductSerializer, CategorySerializer
-from rest_framework.filters import SearchFilter
+from Shop.apps.Store.serializer import ReviewRatingSerializer, ProductSameTag, ProductSerializer, CategorySerializer
+from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.views import APIView
+from taggit.models import Tag
 
 def store(request, slug_category=None):
     categories = Category.objects.all()
@@ -116,3 +118,23 @@ class CategoryListView(ListAPIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
+
+class ProductSameTagView(APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
+    
+    def get(self, request, *args, **kwargs):
+        tagSlug = self.kwargs.get('tag')
+        tag = get_object_or_404(Tag, slug=tagSlug)
+        products = Product.objects.filter(tag__slug__in=[tag])
+        serializer = ProductSameTag(products, many=True)
+        return Response(serializer.data)
+    
+class RatingCreateView(CreateAPIView):
+    queryset = ReviewRating.objects.all()
+    serializer_class = ReviewRatingSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def perform_create(self, serializer):
+        serializer.save()
