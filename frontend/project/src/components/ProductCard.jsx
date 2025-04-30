@@ -1,6 +1,6 @@
 import useCartStore from '../store/cartStore';
 
-const ProductCard = ({ product, onDelete }) => {
+const ProductCard = ({ product }) => {
   const { addToCart } = useCartStore();
 
   const handleAddToCart = () => {
@@ -11,7 +11,7 @@ const ProductCard = ({ product, onDelete }) => {
     <div className="card border rounded-lg p-4 shadow-md hover:shadow-lg transition">
       {product.image && (
         <img
-          src={product.image}
+          src={product.image.includes('http://localhost:8000') ? product.image : `http://127.0.0.1:8000${product.image}`} 
           alt={product.product_name}
           className="card-img-top mb-3"
           style={{ maxHeight: '200px', objectFit: 'cover' }}
@@ -30,9 +30,6 @@ const ProductCard = ({ product, onDelete }) => {
           </button>
           <button className="btn btn-success" onClick={handleAddToCart}>
             Thêm vào giỏ
-          </button>
-          <button className="btn btn-danger" onClick={() => onDelete(product.id)}>
-            Xóa
           </button>
         </div>
       </div>

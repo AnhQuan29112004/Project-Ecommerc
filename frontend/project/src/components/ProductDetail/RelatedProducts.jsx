@@ -1,6 +1,6 @@
 import useCartStore from '../../store/cartStore';
 
-const RelatedProduct = ({ product, onDelete }) => {
+const RelatedProduct = ({ product }) => {
   const { addToCart } = useCartStore();
 
   const handleAddToCart = () => {
@@ -30,9 +30,6 @@ const RelatedProduct = ({ product, onDelete }) => {
           </button>
           <button className="btn btn-success" onClick={handleAddToCart}>
             Thêm vào giỏ
-          </button>
-          <button className="btn btn-danger" onClick={() => onDelete(product.id)}>
-            Xóa
           </button>
         </div>
       </div>

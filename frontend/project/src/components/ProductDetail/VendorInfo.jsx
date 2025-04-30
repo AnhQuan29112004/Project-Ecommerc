@@ -5,7 +5,7 @@ const VendorInfo = ({vendorDetail}) => {
       
       console.log("Vendor Detail",vendorDetail);
     return (
-        <div className="md:w-1/3">
+        <div className="">
             <div className="bg-gray-100 p-4 rounded-lg mb-4">
                 <p className="text-sm text-gray-600">{vendorDetail.address}</p>
                 {vendorDetail.address ? (

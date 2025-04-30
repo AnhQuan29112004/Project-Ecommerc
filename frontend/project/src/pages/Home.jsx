@@ -3,7 +3,7 @@ import ProductCard from '../components/ProductCard';
 import useProductStore from '../store/productStore';
 
 const Home = () => {
-  const { products, loading, error, fetchProducts, deleteProduct } = useProductStore();
+  const { products, loading, error, fetchProducts } = useProductStore();
 
   useEffect(() => {
     fetchProducts(); // Gọi API để lấy tất cả sản phẩm
@@ -18,7 +18,7 @@ const Home = () => {
       <h1 className="text-3xl font-bold mb-6 text-center">Sản phẩm nổi bật</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} onDelete={deleteProduct} />
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
     </div>

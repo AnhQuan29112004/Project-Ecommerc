@@ -1,6 +1,8 @@
+import { useLocation, Link } from 'react-router-dom';
+
 const ProductDetails = ({productDetail}) => {
     return (
-        <div className="md:w-1/2">
+        <div className="">
             <h1 className="text-2xl font-bold text-gray-800">{productDetail.product_name}</h1>
             <div className="flex items-center mt-2">
                 <div className="text-yellow-500">★★★★★</div>
@@ -11,9 +13,8 @@ const ProductDetails = ({productDetail}) => {
                 <span className="text-green-600 font-bold text-xl ml-2">${productDetail.new_price}</span>
                 <span className="text-green-600 ml-2">{productDetail.percentage}% Off</span>
             </div>
-            <p className="mt-4 text-gray-700">
-            <p className="mt-4 text-gray-600">{productDetail.description}</p>
-            </p>
+            <p className="mt-4 text-gray-600">Mô tả tóm tắt: <span>{productDetail.description}</span></p>
+            
             <div className="flex items-center mt-6">
                 <input
                     type="number"
@@ -55,6 +56,20 @@ const ProductDetails = ({productDetail}) => {
                         ></path>
                     </svg>
                 </button>
+            </div>
+            <div className="bg-gray-100 p-4 rounded-lg mb-4 mt-6">
+                    
+                    <h2 className="text-lg font-bold text-gray-800">Product Details</h2>
+                    <ul className="list-disc list-inside text-sm text-gray-600">
+                        <li>Type: {productDetail.type}</li>
+                        <li>MFG: {productDetail.mfg}</li>
+                        <li>EXP: {productDetail.exp}</li>
+                        <li>SKU: {productDetail.sku}</li>
+                        <li>Tags: {productDetail.tag && productDetail.tag.map((tag) => (<Link key={tag} to={`/product/tag/${tag}`}><span>#{tag}, </span></Link>))}</li>
+                        
+                        
+                        <li>Stock: {productDetail.stock} Items in Stock</li>
+                    </ul>
             </div>
             {/* <div className="mt-6 text-sm text-gray-600">
                 <p>Type: Organic</p>

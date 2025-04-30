@@ -9,6 +9,7 @@ import Store from './pages/Store'; // Thêm trang Store
 import Categories from './pages/ProductCategory'; // Thêm trang Categories
 import Category from './pages/Category'; // Thêm trang Category
 import Cart from './pages/Cart'; // Thêm trang Cart
+import ProductSameTag from './pages/ProductSameTag'; // Thêm trang ProductSameTag
 import Layout from './Layout';
 
 const router = createBrowserRouter([
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
           {
             path: 'product/:slug',
             element: <ProductDetail />,
+          },
+          {
+            path: 'product/tag/:slug',
+            element: <ProductSameTag />,
           },
           {
             path: 'vendors',

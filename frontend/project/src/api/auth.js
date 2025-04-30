@@ -76,3 +76,8 @@ export const getProductDetail = async (slug) => {
   const response = await api.get(`/products/${slug}`); 
   return response.data;
 }
+
+export const getProductSameTag = async (slug) => {
+  const response = await api.get(`/products/tag/${slug}`); 
+  return response.data;
+}
