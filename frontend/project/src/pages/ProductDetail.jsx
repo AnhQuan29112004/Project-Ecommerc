@@ -16,7 +16,7 @@ const ProductDetail = () => {
   useEffect(() => {
     fetchDetailProduct(slug);
   }, [slug, fetchDetailProduct]);
-
+  
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
