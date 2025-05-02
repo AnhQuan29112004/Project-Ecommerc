@@ -29,7 +29,7 @@ class ProductSerializer(serializers.ModelSerializer):
         queryset = ReviewRating.objects.filter(product=obj, is_active=True).order_by('-create_at')
         serializer = ReviewRatingSerializer(queryset, many=True).data
         total_rating = ReviewRating.objects.filter(product=obj, is_active=True).aggregate(Avg('rating'))
-    
+
         return {
             'allRating': serializer,
             'average_rating': round(total_rating['rating__avg'] if total_rating['rating__avg'] else 0.0, 1)
@@ -69,7 +69,7 @@ class ReviewRatingSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['user'] = instance.user.username if instance.user else None
         representation['create_by'] = instance.user.username if instance.user else None
-        representation['avtUser'] = instance.user.userprofile.picture_profile.url if instance.user.role == "User" else instance.user.vendorprofile.picture_profile.url
+        # representation['avtUser'] = instance.user.userprofile.picture_profile.url if instance.user.userprofile.picture_profile and instance.user.role == "User" else ""
         return representation
 
     def create(self, validated_data):
