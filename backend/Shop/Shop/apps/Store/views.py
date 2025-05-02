@@ -13,6 +13,7 @@ from Shop.apps.Store.serializer import ReviewRatingSerializer, ProductSameTag, P
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.views import APIView
 from taggit.models import Tag
+from rest_framework import status
 
 def store(request, slug_category=None):
     categories = Category.objects.all()
@@ -131,10 +132,24 @@ class ProductSameTagView(APIView):
         return Response(serializer.data)
     
 class RatingCreateView(CreateAPIView):
-    queryset = ReviewRating.objects.all()
+    queryset = ReviewRating.objects.all().filter(is_active=True)
     serializer_class = ReviewRatingSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
     def perform_create(self, serializer):
         serializer.save()
+        
+class RatingDeletaView(DestroyAPIView):
+    queryset = ReviewRating.objects.all().filter(is_active=True)
+    serializer_class = ReviewRatingSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def perform_destroy(self, instance):
+        instance.is_active = False
