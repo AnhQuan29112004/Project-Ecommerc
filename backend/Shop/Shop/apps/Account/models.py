@@ -87,7 +87,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
 
 class UserProfile(models.Model):
     uid = ShortUUIDField(unique=True, max_length=10, default=uid.generate_uid)
-    user = models.OneToOneField("Account", on_delete=models.CASCADE, null=True, blank=True)
+    user = models.OneToOneField(Account, on_delete=models.CASCADE, null=True, blank=True)
     picture_profile = models.ImageField(upload_to='user/avt')
     address = models.CharField(max_length=100)
     
