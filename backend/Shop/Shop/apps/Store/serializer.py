@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from Shop.apps.Store.models import Product, Category,ReviewRating, ProductGallery
-from Shop.apps.Account.models import Account
+from Shop.apps.Account.models import Account, UserProfile, VendorProfile
 
 from Shop.apps.Account.serializers import VendorSerializer
 from django.db.models import Sum, Avg
@@ -67,8 +67,8 @@ class ReviewRatingSerializer(serializers.ModelSerializer):
         return super().validate(attrs)
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['user'] = instance.user.username if instance.user else None
-        representation['create_by'] = instance.user.username if instance.user else None
+        representation['user'] = instance.user.user.username if instance.user else None
+        representation['create_by'] = instance.user.user.username if instance.user else None
         # representation['avtUser'] = instance.user.userprofile.picture_profile.url if instance.user.userprofile.picture_profile and instance.user.role == "User" else ""
         return representation
 
@@ -77,10 +77,11 @@ class ReviewRatingSerializer(serializers.ModelSerializer):
         product_slug = validated_data["product"]
 
         user = Account.objects.get(username=user_username)
+        getUser = UserProfile.objects.get(user = user)
         product = Product.objects.get(slug=product_slug)
-
+        breakpoint()
         return ReviewRating.objects.create(
-            user=user,
+            user=getUser,
             product=product,
             review=validated_data['review'],
             rating=float(validated_data['rating']),

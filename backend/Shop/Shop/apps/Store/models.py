@@ -77,7 +77,7 @@ class ReviewRating(models.Model):
     rating = models.FloatField()
     create_at = models.DateTimeField(auto_now_add=True)
     modified_by = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(Account,on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(UserProfile,on_delete=models.CASCADE, null=True, blank=True)
     product = models.ForeignKey("Product", on_delete=models.CASCADE, related_name='productReview') 
     subject = models.CharField(max_length=50, default='')
     create_by = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True, default=None, related_name='reviewRating')
