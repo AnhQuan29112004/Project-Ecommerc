@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/api';
+import { Modal, Button } from 'antd';
 import React from 'react';
 import useAuthStore from '../../store/authStore';
 import productDetail from '../../store/productDetail';
@@ -9,8 +10,9 @@ import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid'; // Import ico
 const RatingProduct = ({productSlug, productRating }) => {
     console.log("Slug:",productSlug);
     const { user } = useAuthStore((state) => state);
+    const [openModal, setOpenModal] = useState(false);
     const { fetchDetailProduct, loading, error, detail } = productDetail((state) => state);
-
+    const [idReviewUpdate, setIdReviewUpdate] = useState();
     const [allRating, setAllRating] = useState(productRating.allRating);
     const [isRating, setIsRating] = useState(false);
     const [averageRating, setAverageRating] = useState(productRating.average_rating);
@@ -25,6 +27,13 @@ const RatingProduct = ({productSlug, productRating }) => {
     useEffect(()=>{
       const checkIsRating = allRating.some((rating)=>rating.user === user.data.username);
       setIsRating(checkIsRating);
+      const userRating = allRating.find(r => r.user === user.data.username);
+      if (userRating) {
+        setFormData({
+          rating: userRating.rating,
+          review: userRating.review,
+        });
+      }
     },[fetchDetailProduct])
     
     
@@ -36,6 +45,20 @@ const RatingProduct = ({productSlug, productRating }) => {
         });
     }
     const {rating, review, userName, product} = formData;
+
+    const handleUpdateReview = async (e)=>{
+      e.preventDefault();
+        try {
+            const response = await api.put(`/rating/update/${idReviewUpdate}`,  {rating, review, userName, product}
+            );
+            const data = response.data;
+            console.log('Review updated:', data);
+            fetchDetailProduct(productSlug);
+
+        } catch (error) {
+            console.error('Error adding review:', error);
+        }
+    }
     const handleAddReview = async (e) => {
         e.preventDefault();
         try {
@@ -74,7 +97,7 @@ const RatingProduct = ({productSlug, productRating }) => {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">
-                    {new Date(rating.create_at).toLocaleDateString()} - {new Date(rating.create_at).toLocaleTimeString()}
+                    {new Date(rating.modified_by).toLocaleDateString()} - {new Date(rating.modified_by).toLocaleTimeString()}
                         </p>
                     <div className="flex">
                     {[...Array(5)].map((_, i) => {
@@ -99,7 +122,7 @@ const RatingProduct = ({productSlug, productRating }) => {
                   </div>
                   {rating.user === user.data.username && (
                     <div className='ml-auto flex'>
-                    <button className="px-3 py-1 text-white rounded text-sm">
+                    <button onClick={()=>{setIsOpenModal(true);setIdReviewUpdate(rating.id);}} className="px-3 py-1 text-white rounded text-sm">
                       <PencilIcon className="w-5 h-5 group-hover:text-blue-700" />
                     </button>
                     <button className="px-3 py-1 text-white rounded text-sm">
@@ -113,7 +136,27 @@ const RatingProduct = ({productSlug, productRating }) => {
             ))}
           </div>
         </div>
+        <Modal open={isOpenModal} title="Modal Title" onCancel={()=>setIsOpenModal(false)} onOk={handleUpdateReview}>
+          {allRating.filter(rating => rating.user === user.data.username).map((rating)=>(
+            <>
+            <div className="rate">
+                  {[0.5,1,1.5,2,2.5,3,3.5,4,4.5,5].reverse().map((val, i) => (
+                      <React.Fragment key={i}>
+                      <input type="radio" onChange={changeFormData} name="rating" id={`rating${i}`} value={val} required /><label htmlFor={`rating${i}`} title={val} className={val % 1 !== 0 ? "half" : ''}></label>
 
+                      </React.Fragment>
+                  ))}
+              </div>
+              <input style={{ backgroundColor: 'white',
+              color: 'black',
+              border: '1px solid #ccc',
+              padding: '10px',
+              borderRadius: '4px', }} name="review" onChange={changeFormData} value={formData.review} type="textarea" className="border-2 border-gray-300 rounded-md p-2 w-full mb-4" /></>
+            
+          
+          )) };
+            
+        </Modal>
 
 
 
