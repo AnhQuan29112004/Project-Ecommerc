@@ -41,12 +41,12 @@ const Header = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    navigate(`/store?keyword=${searchQuery}`);
+    navigate(`/products/?keyword=${searchQuery}`);
   };
 
   return (
     <header className="bg-white shadow-md">
-      <nav className="px-4 sm:px-6 lg:px-8">
+      <nav className="">
         <div className="relative max-w-6xl mx-auto flex h-16 items-center justify-between">
           <div className="flex items-center">
             <Link to="/home" className="text-2xl font-bold text-gray-800">
