@@ -5,7 +5,7 @@ import Breadcrumb from './components/Breadscumb/Breadscrumb';
 
 const Layout = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="mx-auto w-full min-h-screen flex flex-col bg-white">
       <Header />
       <Breadcrumb />
       <main className="flex-1">
