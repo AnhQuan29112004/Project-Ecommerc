@@ -6,7 +6,7 @@ function Breadcrumb() {
   const pathnames = location.pathname.split('/').filter((x) => x !== "home" && x !== '');  // Tách đường dẫn thành các phần
 
   return (
-    <nav style={{ margin: '10px 0' }}>
+    <nav className="flex max-w-7xl mx-auto w-full" style={{ margin: '10px 0' }}>
       <Link to="/" style={{ textDecoration: 'none', color: 'blue' }}>
         Home
       </Link>
