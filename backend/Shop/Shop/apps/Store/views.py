@@ -9,11 +9,12 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from Shop.apps.Account.serializers import VendorSerializer
-from Shop.apps.Store.serializer import ReviewRatingSerializer, ProductSameTag, ProductSerializer, CategorySerializer
+from Shop.apps.Store.serializer import AllTagSerializer, ReviewRatingSerializer, ProductSerializer, CategorySerializer
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.views import APIView
 from taggit.models import Tag
 from rest_framework import status
+from utils.search.searchbase import CustomSearchFilter
 
 def store(request, slug_category=None):
     categories = Category.objects.all()
@@ -75,7 +76,7 @@ class ProductListView(ListAPIView):
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
     authentication_classes = [JWTAuthentication]
-    filter_backends = [SearchFilter]
+    filter_backends = [CustomSearchFilter]
     search_fields = ['name']
     
 class ProductDetailView(RetrieveAPIView):
@@ -128,7 +129,7 @@ class ProductSameTagView(APIView):
         tagSlug = self.kwargs.get('tag')
         tag = get_object_or_404(Tag, slug=tagSlug)
         products = Product.objects.filter(tag__slug__in=[tag])
-        serializer = ProductSameTag(products, many=True)
+        serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
     
 class RatingCreateView(CreateAPIView):
@@ -176,3 +177,13 @@ class RatingDeletaView(DestroyAPIView):
     def perform_destroy(self, instance):
         instance.is_active = False
         instance.save(update_fields=["is_active"])
+        
+class GetAllTagView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    serializer_class = AllTagSerializer
+    queryset = Tag.objects.filter(
+        taggit_taggeditem_items__content_type__model='product',
+        taggit_taggeditem_items__content_type__app_label='Store'
+    ).distinct()
+    
