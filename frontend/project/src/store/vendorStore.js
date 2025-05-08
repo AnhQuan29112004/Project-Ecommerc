@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { getVendorProducts, getVendors } from '../api/auth';
 
-const vendorStore = create((set) => ({
+const useVendorStore  = create((set) => ({
   vendorData: [],
   vendorCount: 0,
   loading: false,
@@ -10,8 +10,9 @@ const vendorStore = create((set) => ({
   fetchVendor: async () => {
     set({ loading: true });
     try {
-      const vendorData = await getVendors();
-      set({ vendorData: vendorData.items || [], loading: false, error: null });
+      const vendors = await getVendors();
+      set({ vendorData: vendors || [], loading: false, error: null });
+      
     } catch (error) {
       set({ error: 'Lỗi khi tải vendors.', loading: false });
     }
@@ -30,4 +31,4 @@ const vendorStore = create((set) => ({
     
 
 
-export default vendorStore;
+export default useVendorStore ;

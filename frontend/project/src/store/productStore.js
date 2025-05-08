@@ -6,10 +6,10 @@ const useProductStore = create((set) => ({
   loading: false,
   error: null,
 
-  fetchProducts: async () => {
+  fetchProducts: async (params) => {
     set({ loading: true });
     try {
-      const data = await getAllProducts();
+      const data = await getAllProducts(params);
       console.log('Fetched products:', data); // Log the fetched products
       set({ products: data, loading: false, error: null });
     } catch (error) {

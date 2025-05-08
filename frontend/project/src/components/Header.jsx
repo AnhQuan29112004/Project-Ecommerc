@@ -3,6 +3,7 @@ import useAuthStore from '../store/authStore';
 import useCartStore from '../store/cartStore';
 import useCategoryStore from '../store/categoryStore';
 import { useEffect, useState, useRef } from 'react';
+import qs from 'query-string'
 
 const Header = () => {
   const { user, isAuthenticated, fetchUser, logout } = useAuthStore();
@@ -41,7 +42,14 @@ const Header = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    navigate(`/products/?keyword=${searchQuery}`);
+    const searchParams = {
+      keySearch: searchQuery,
+    }
+    navigate({
+      pathname:``,
+      search:`?${qs.stringify(searchParams)}`
+  });
+
   };
 
   return (

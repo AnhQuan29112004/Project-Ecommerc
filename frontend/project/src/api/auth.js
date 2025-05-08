@@ -1,5 +1,6 @@
 import api from './api';
 import Cookies from 'js-cookie';
+import qs from 'query-string'
 
 export const login = async (email, password) => {
   const response = await api.post('/auth/login/', { email, password });
@@ -67,8 +68,8 @@ export const getCategoryProducts = async (slug) => {
 //     const response = await api.post('/cart/add/', { productId, quantity });
 //     return response.data;
 //   };
-export const getAllProducts = async () => {
-    const response = await api.get('/products/');
+export const getAllProducts = async (params) => {
+    const response = await api.get(`/products/?${params}`);
     return response.data;
   };
 

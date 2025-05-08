@@ -1,19 +1,42 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import ProductCard from '../components/ProductCard';
 import useProductStore from '../store/productStore';
-import { Link } from 'react-router-dom';
+import useVendorStore from '../store/vendorStore';
+import { Link, useLocation } from 'react-router-dom';
 import useCategoryStore from '../store/categoryStore';
+import qs from 'query-string';
+import api from '../api/api';
+import { all } from 'axios';
 
 
 const Home = () => {
   const { products, loading, error, fetchProducts } = useProductStore();
+  const { vendorData, fetchVendor} = useVendorStore();
   const { categories } = useCategoryStore();
+  const crrLocation = useLocation();
+  const [allTag, setAllTag] = useState({
+    Tags :[],
+    loading : true,
+    error:false
+  })
 
   useEffect(() => {
-    fetchProducts(); // Gọi API để lấy tất cả sản phẩm
-  }, [fetchProducts]);
-  console.log({ loading, error, products });
-
+    const queryParams = qs.parse(crrLocation.search, { parseNumbers: false, parseBooleans: false });
+    
+    const queryString = qs.stringify(queryParams,{ skipNull: true, skipEmptyString: true });
+    const fetchTag = async () =>{
+      const response = await api.get("/tag/get");
+      setAllTag({
+        ...allTag,
+        Tags:response.data,
+        loading:false
+      })
+    }
+    fetchTag();
+    fetchProducts(queryString); 
+    fetchVendor();
+  }, [fetchProducts,crrLocation,fetchVendor]);
+  console.log("All tag:", allTag)
   if (loading) return <div className="text-center p-8">Đang tải...</div>;
   if (error) return <div className="text-center p-8 text-red-500">{error}</div>;
 
@@ -43,43 +66,21 @@ const Home = () => {
           <div className="bg-white p-4 rounded-lg shadow mb-4">
             <h3 className="font-semibold text-gray-700 mb-2">By Vendors</h3>
             <ul className="space-y-2 text-gray-600">
-              <li><input type="checkbox" className="mr-2" /> Aldi</li>
-              <li><input type="checkbox" className="mr-2" /> Adidas</li>
-              <li><input type="checkbox" className="mr-2" /> Burbe</li>
-              <li><input type="checkbox" className="mr-2" /> Chanel</li>
-              <li><input type="checkbox" className="mr-2" /> Costco</li>
-              <li><input type="checkbox" className="mr-2" /> Green Tea</li>
-              <li><input type="checkbox" className="mr-2" /> Harris</li>
-              <li><input type="checkbox" className="mr-2" /> iSnack</li>
-              <li><input type="checkbox" className="mr-2" /> Kroger</li>
-              <li><input type="checkbox" className="mr-2" /> Pambox</li>
-              <li><input type="checkbox" className="mr-2" /> Prada</li>
-              <li><input type="checkbox" className="mr-2" /> Targets</li>
-              <li><input type="checkbox" className="mr-2" /> Trader</li>
+              {vendorData.map((vendor)=>(<li><input type="checkbox" className="mr-2" /> {vendor.title_shop}</li>)
+                
+              )}
             </ul>
           </div>
           {/* By Tags */}
           <div className="bg-white p-4 rounded-lg shadow mb-4">
             <h3 className="font-semibold text-gray-700 mb-2">By Tags</h3>
             <div className="flex flex-wrap gap-2">
-              <span className="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full flex items-center">
-                Milk <button className="ml-2 text-gray-500 hover:text-gray-700">×</button>
-              </span>
-              <span className="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full flex items-center">
-                Broccoli <button className="ml-2 text-gray-500 hover:text-gray-700">×</button>
-              </span>
-              <span className="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full flex items-center">
-                Smoothie <button className="ml-2 text-gray-500 hover:text-gray-700">×</button>
-              </span>
-              <span className="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full flex items-center">
-                Fruit <button className="ml-2 text-gray-500 hover:text-gray-700">×</button>
-              </span>
-              <span className="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full flex items-center">
-                Salad <button className="ml-2 text-gray-500 hover:text-gray-700">×</button>
-              </span>
-              <span className="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full flex items-center">
-                Appetizer <button className="ml-2 text-gray-500 hover:text-gray-700">×</button>
-              </span>
+              {allTag.Tags.map((tag)=>(
+                <span className="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full flex items-center">
+                  {tag.slug} <button className="ml-2 text-gray-500 hover:text-gray-700">×</button>
+                </span>
+              ))}
+                
             </div>
           </div>
           {/* By Price */}
